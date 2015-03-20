@@ -1,0 +1,7 @@
+language: objective-c
+install:
+  - brew update
+  - gem update xcpretty cocoapods
+  - pod update
+script:
+  - xcodebuild -workspace SPLTableViewBehavior.xcworkspace -scheme SPLTableViewBehavior test -sdk iphonesimulator -configuration Release | xcpretty -c; exit ${PIPESTATUS[0]}
