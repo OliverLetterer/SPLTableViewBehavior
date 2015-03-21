@@ -36,6 +36,7 @@
 @property (nonatomic, weak) id<SPLTableViewUpdate> update;
 
 @property (nonatomic, readonly) NSFetchedResultsController *controller;
+@property (nonatomic, copy) void(^deletionHandler)(id object);
 
 - (instancetype)init UNAVAILABLE_ATTRIBUTE;
 - (instancetype)initWithPrototype:(UITableViewCell *)prototype controller:(NSFetchedResultsController *)controller configurator:(void(^)(UITableViewCell *cell, id object))configurator;

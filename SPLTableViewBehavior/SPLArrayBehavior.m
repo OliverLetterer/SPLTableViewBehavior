@@ -28,6 +28,9 @@
 
 @interface SPLArrayBehavior ()
 
+@property (nonatomic, copy) NSArray *data;
+@property (nonatomic, readonly) NSMutableArray *mutableData;
+
 @property (nonatomic, copy) void(^handler)(id object);
 @property (nonatomic, readonly) void(^configurator)(UITableViewCell *cell, id object);
 @property (nonatomic, readonly) UITableViewCellPrototypeDeque deque;
@@ -37,6 +40,13 @@
 
 
 @implementation SPLArrayBehavior
+
+#pragma mark - setters and getters
+
+- (NSMutableArray *)mutableData
+{
+    return [self mutableArrayValueForKey:NSStringFromSelector(@selector(data))];
+}
 
 #pragma mark - Initialization
 
@@ -65,6 +75,10 @@
         return self.handler != nil;
     }
 
+    if (aSelector == @selector(tableView:canEditRowAtIndexPath:) || aSelector == @selector(tableView:commitEditingStyle:forRowAtIndexPath:)) {
+        return self.deletionHandler != nil;
+    }
+
     return [super respondsToSelector:aSelector];
 }
 
@@ -83,6 +97,22 @@
     self.configurator(cell, object);
 
     return cell;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        id object = self.data[indexPath.row];
+        self.deletionHandler(object);
+        [self.mutableData removeObjectAtIndex:indexPath.row];
+
+        [self.update deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationLeft fromTableViewBehavior:self];
+    }
 }
 
 #pragma mark - UITableViewDelegate

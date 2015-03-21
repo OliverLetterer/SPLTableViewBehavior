@@ -35,6 +35,7 @@
 @property (nonatomic, weak) id<SPLTableViewUpdate> update;
 
 @property (nonatomic, copy, readonly) NSArray *data;
+@property (nonatomic, copy) void(^deletionHandler)(id object);
 
 - (instancetype)init UNAVAILABLE_ATTRIBUTE;
 - (instancetype)initWithPrototype:(UITableViewCell *)prototype data:(NSArray *)data configurator:(void(^)(UITableViewCell *cell, id object))configurator;

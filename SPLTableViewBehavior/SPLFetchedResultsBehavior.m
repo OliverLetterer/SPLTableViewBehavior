@@ -71,6 +71,10 @@
         return self.handler != nil;
     }
 
+    if (aSelector == @selector(tableView:canEditRowAtIndexPath:) || aSelector == @selector(tableView:commitEditingStyle:forRowAtIndexPath:)) {
+        return self.deletionHandler != nil;
+    }
+
     return [super respondsToSelector:aSelector];
 }
 
@@ -89,6 +93,19 @@
     self.configurator(cell, object);
 
     return cell;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        id object = self.controller.fetchedObjects[indexPath.row];
+        self.deletionHandler(object);
+    }
 }
 
 #pragma mark - UITableViewDelegate

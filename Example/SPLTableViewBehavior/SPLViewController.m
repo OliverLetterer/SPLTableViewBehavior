@@ -63,10 +63,20 @@
             cell.textLabel.text = @"Section 1";
             cell.detailTextLabel.text = object;
         }];
+        [arrayBehavior2 setDeletionHandler:^(NSString *object) {
+            NSLog(@"Do something with deleted object: %@", object);
+        }];
 
         SPLFetchedResultsBehavior *coreDataBehavior = [[SPLFetchedResultsBehavior alloc] initWithPrototype:dataPrototype controller:controller configurator:^(UITableViewCell *cell, ManagedObject *object) {
             cell.textLabel.text = @"From CoreData";
             cell.detailTextLabel.text = object.name;
+        }];
+        [coreDataBehavior setDeletionHandler:^(ManagedObject *object) {
+            [object.managedObjectContext deleteObject:object];
+
+            NSError *saveError = nil;
+            [object.managedObjectContext save:&saveError];
+            NSCAssert(saveError == nil, @"error saving managed object context: %@", saveError);
         }];
 
         SPLSectionBehavior *section0 = [[SPLSectionBehavior alloc] initWithTitle:@"Section 0" behaviors:@[ b1, arrayBehavior1 ]];
@@ -88,10 +98,6 @@
     self.tableView.dataSource = self.behavior;
     self.tableView.delegate = self.behavior;
     self.tableView.rowHeight = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone ? 66.0 : 88.0;
-
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        NSLog(@"Timer");
-    });
 }
 
 #pragma mark - Private category implementation ()
