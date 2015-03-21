@@ -1,5 +1,5 @@
 /*
- SPLTableViewBehavior.h
+ SPLArrayBehavior.h
  Copyright (c) 2015 Oliver Letterer <oliver.letterer@gmail.com>, Sparrow-Labs
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,24 +23,19 @@
 
 #import <UIKit/UIKit.h>
 
-#import <SPLTableViewBehavior/SPLTableViewUpdate.h>
 #import <SPLTableViewBehavior/SPLTableViewBehaviorProtocol.h>
-#import <SPLTableViewBehavior/UITableView+SPLTableViewUpdate.h>
-
-#import <SPLTableViewBehavior/SPLSectionBehavior.h>
-#import <SPLTableViewBehavior/SPLArrayBehavior.h>
 
 
 
 /**
  @abstract  <#abstract comment#>
  */
-@interface SPLTableViewBehavior : NSObject <SPLTableViewBehavior>
+@interface SPLArrayBehavior : NSObject <SPLTableViewBehavior>
 
 @property (nonatomic, weak) id<SPLTableViewUpdate> update;
 
 - (instancetype)init UNAVAILABLE_ATTRIBUTE;
-- (instancetype)initWithPrototype:(UITableViewCell *)prototype configurator:(void(^)(UITableViewCell *cell))configurator;
-- (instancetype)initWithPrototype:(UITableViewCell *)prototype configurator:(void(^)(UITableViewCell *cell))configurator handler:(dispatch_block_t)handler NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithPrototype:(UITableViewCell *)prototype data:(NSArray *)data configurator:(void(^)(UITableViewCell *cell, id object))configurator;
+- (instancetype)initWithPrototype:(UITableViewCell *)prototype data:(NSArray *)data configurator:(void(^)(UITableViewCell *cell, id object))configurator handler:(void(^)(id object))handler NS_DESIGNATED_INITIALIZER;
 
 @end

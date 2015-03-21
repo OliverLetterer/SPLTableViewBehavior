@@ -172,11 +172,11 @@
 - (id<SPLTableViewBehavior>)_behaviorForTableView:(UITableView *)tableView atndexPath:(NSIndexPath *)indexPath childIndexPath:(out NSIndexPath **)childIndexPath
 {
     NSInteger currentIndex = 0;
-    NSRange currentRange = NSMakeRange(0, [self.behaviors[0] tableView:tableView numberOfRowsInSection:1]);
+    NSRange currentRange = NSMakeRange(0, [self.behaviors[currentIndex] tableView:tableView numberOfRowsInSection:1]);
 
     while (!NSLocationInRange(indexPath.row, currentRange)) {
         currentIndex++;
-        currentRange = NSMakeRange(currentRange.location + currentRange.length, [self.behaviors[0] tableView:tableView numberOfRowsInSection:1]);
+        currentRange = NSMakeRange(currentRange.location + currentRange.length, [self.behaviors[currentIndex] tableView:tableView numberOfRowsInSection:0]);
     }
 
     if (childIndexPath) {

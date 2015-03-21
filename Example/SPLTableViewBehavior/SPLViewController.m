@@ -27,28 +27,30 @@
 - (instancetype)init
 {
     if (self = [super initWithStyle:UITableViewStylePlain]) {
-        UITableViewCell *plainPrototype = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"Cell"];
-//        plainPrototype.selectionStyle = UITableViewCellSelectionStyleNone;
-        plainPrototype.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        UITableViewCell *actionPrototype = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"actionPrototype"];
+        actionPrototype.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 
-        SPLTableViewBehavior *b1 = [[SPLTableViewBehavior alloc] initWithPrototype:plainPrototype configurator:^(UITableViewCell *cell) {
-            cell.textLabel.text = @"Hello from";
-            cell.detailTextLabel.text = @"SPLTableViewBehavior";
-        }];
+        UITableViewCell *dataPrototype = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"dataPrototype"];
+        dataPrototype.selectionStyle = UITableViewCellSelectionStyleNone;
 
-        SPLTableViewBehavior *b2 = [[SPLTableViewBehavior alloc] initWithPrototype:plainPrototype configurator:^(UITableViewCell *cell) {
-            cell.textLabel.text = @"Some action";
-            cell.detailTextLabel.text = @"SPLTableViewBehavior";
-        }];
-
-        SPLTableViewBehavior *b3 = [[SPLTableViewBehavior alloc] initWithPrototype:plainPrototype configurator:^(UITableViewCell *cell) {
-            cell.textLabel.text = @"Action three";
-            cell.detailTextLabel.text = @"SPLTableViewBehavior";
+        __weak typeof(self) weakSelf = self;
+        SPLTableViewBehavior *b1 = [[SPLTableViewBehavior alloc] initWithPrototype:actionPrototype configurator:^(UITableViewCell *cell) {
+            cell.textLabel.text = @"Go to";
+            cell.detailTextLabel.text = @"next view controller";
         } handler:^{
-            NSLog(@"Action 3");
+            __strong typeof(self) self = weakSelf;
+            [self.navigationController pushViewController:[[SPLViewController alloc] init] animated:YES];
         }];
 
-        _behavior = [[SPLSectionBehavior alloc] initWithBehaviors:@[ b1, b2, b3 ]];
+        NSArray *data = @[ @"Object 1", @"Object 2", @"Object 3" ];
+        SPLArrayBehavior *arrayBehavior = [[SPLArrayBehavior alloc] initWithPrototype:dataPrototype data:data configurator:^(UITableViewCell *cell, NSString *object) {
+            cell.textLabel.text = @"Data:";
+            cell.detailTextLabel.text = object;
+        } handler:^(NSString *object) {
+            NSLog(@"Do something with %@", object);
+        }];
+
+        _behavior = [[SPLSectionBehavior alloc] initWithBehaviors:@[ b1, arrayBehavior ]];
     }
     return self;
 }

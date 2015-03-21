@@ -1,5 +1,5 @@
 /*
- SPLTableViewBehavior.m
+ SPLArrayBehavior.m
  Copyright (c) 2015 Oliver Letterer <oliver.letterer@gmail.com>, Sparrow-Labs
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,33 +21,37 @@
  THE SOFTWARE.
  */
 
-#import "SPLTableViewBehavior.h"
+#import "SPLArrayBehavior.h"
 #import "UITableViewCell+SPLTableViewBehavior.h"
 
 
 
-@interface SPLTableViewBehavior ()
+@interface SPLArrayBehavior ()
 
-@property (nonatomic, readonly) dispatch_block_t handler;
-@property (nonatomic, readonly) void(^configurator)(UITableViewCell *cell);
+@property (nonatomic, readonly) NSArray *data;
+
+@property (nonatomic, copy) void(^handler)(id object);
+@property (nonatomic, readonly) void(^configurator)(UITableViewCell *cell, id object);
 @property (nonatomic, readonly) UITableViewCellPrototypeDeque deque;
 
 @end
 
 
 
-@implementation SPLTableViewBehavior
+@implementation SPLArrayBehavior
 
 #pragma mark - Initialization
 
-- (instancetype)initWithPrototype:(UITableViewCell *)prototype configurator:(void(^)(UITableViewCell *cell))configurator
+- (instancetype)initWithPrototype:(UITableViewCell *)prototype data:(NSArray *)data configurator:(void(^)(UITableViewCell *cell, id object))configurator
 {
-    return [self initWithPrototype:prototype configurator:configurator handler:nil];
+    return [self initWithPrototype:prototype data:data configurator:configurator handler:nil];
 }
 
-- (instancetype)initWithPrototype:(UITableViewCell *)prototype configurator:(void(^)(UITableViewCell *cell))configurator handler:(dispatch_block_t)handler
+- (instancetype)initWithPrototype:(UITableViewCell *)prototype data:(NSArray *)data configurator:(void(^)(UITableViewCell *cell, id object))configurator handler:(void(^)(id object))handler
 {
     if (self = [super init]) {
+        _data = data.copy;
+
         _deque = prototype.dequeBlock;
         _configurator = configurator;
         _handler = handler;
@@ -70,13 +74,16 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 1;
+    return self.data.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = self.deque(tableView);
-    self.configurator(cell);
+
+    id object = self.data[indexPath.row];
+    self.configurator(cell, object);
+
     return cell;
 }
 
@@ -84,7 +91,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    self.handler();
+    id object = self.data[indexPath.row];
+    self.handler(object);
 }
 
 @end
