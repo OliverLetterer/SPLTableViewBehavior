@@ -25,14 +25,56 @@
 
 
 
+@interface _SPLUITableViewUpdate ()
+
+@property (nonatomic, readonly) CFRunLoopObserverRef observer;
+
+@end
+
+
+
 @implementation _SPLUITableViewUpdate
 
 - (instancetype)initWithTableView:(UITableView *)tableView
 {
     if (self = [super init]) {
         _tableView = tableView;
+
+        /*
+         kCFRunLoopEntry = (1UL << 0),
+         kCFRunLoopBeforeTimers = (1UL << 1),
+         kCFRunLoopBeforeSources = (1UL << 2),
+         kCFRunLoopBeforeWaiting = (1UL << 5),
+         kCFRunLoopAfterWaiting = (1UL << 6),
+         kCFRunLoopExit = (1UL << 7),
+         kCFRunLoopAllActivities = 0x0FFFFFFFU
+         */
+        _observer = CFRunLoopObserverCreateWithHandler(NULL, kCFRunLoopAllActivities, true, 100, ^(CFRunLoopObserverRef observer, CFRunLoopActivity activity) {
+            if (activity & kCFRunLoopEntry) {
+                NSLog(@"Entering run loop");
+            }
+
+            if (activity & kCFRunLoopExit) {
+                NSLog(@"Exit");
+            }
+
+            if (activity & kCFRunLoopBeforeWaiting) {
+                NSLog(@"Before waiting");
+            }
+
+            NSLog(@"mode = %@", CFRunLoopCopyCurrentMode(CFRunLoopGetMain()));
+//            NSLog(@"Activity: %ld, (kCFRunLoopExit = %ld)", activity, kCFRunLoopExit);
+        });
+
+//        CFRunLoopAddObserver(CFRunLoopGetMain(), _observer, kCFRunLoopCommonModes);
     }
     return self;
+}
+
+- (void)dealloc
+{
+//    CFRunLoopRemoveObserver(CFRunLoopGetMain(), _observer, kCFRunLoopCommonModes);
+    CFRelease(_observer);
 }
 
 - (void)tableViewBehaviorBeginUpdates:(id<SPLTableViewBehavior>)tableViewBehavior

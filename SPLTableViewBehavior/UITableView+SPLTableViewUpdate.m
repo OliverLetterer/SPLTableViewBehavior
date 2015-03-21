@@ -24,13 +24,19 @@
 #import "UITableView+SPLTableViewUpdate.h"
 #import "_SPLUITableViewUpdate.h"
 
+#import <objc/runtime.h>
+
 
 
 @implementation UITableView (SPLTableViewUpdate)
 
 - (id<SPLTableViewUpdate>)update
 {
-    return [[_SPLUITableViewUpdate alloc] initWithTableView:self];
+    if (!objc_getAssociatedObject(self, _cmd)) {
+        objc_setAssociatedObject(self, _cmd, [[_SPLUITableViewUpdate alloc] initWithTableView:self], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+
+    return objc_getAssociatedObject(self, _cmd);
 }
 
 @end

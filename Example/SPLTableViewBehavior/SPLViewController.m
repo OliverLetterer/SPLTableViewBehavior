@@ -7,6 +7,8 @@
 //
 
 #import "SPLViewController.h"
+#import "CoreDataStack.h"
+#import "ManagedObject.h"
 
 #import <SPLTableViewBehavior/SPLTableViewBehavior.h>
 
@@ -25,6 +27,14 @@
 - (instancetype)init
 {
     if (self = [super initWithStyle:UITableViewStylePlain]) {
+        NSDate *now = [NSDate date];
+        [self _seedDemoDataAtDate:now];
+
+        NSFetchedResultsController *controller = [[NSFetchedResultsController alloc] initWithFetchRequest:[self _fetchRequestAtDate:now]
+                                                            managedObjectContext:[CoreDataStack sharedInstance].mainThreadManagedObjectContext
+                                                              sectionNameKeyPath:nil
+                                                                       cacheName:nil];
+
         UITableViewCell *actionPrototype = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"actionPrototype"];
         actionPrototype.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 
@@ -54,10 +64,15 @@
             cell.detailTextLabel.text = object;
         }];
 
-        SPLSectionBehavior *section0 = [[SPLSectionBehavior alloc] initWithTitle:@"Section 0" behaviors:@[ b1, arrayBehavior1 ]];
-//        SPLSectionBehavior *section1 = [[SPLSectionBehavior alloc] initWithTitle:@"Section 1" behaviors:@[ arrayBehavior2 ]];
+        SPLFetchedResultsBehavior *coreDataBehavior = [[SPLFetchedResultsBehavior alloc] initWithPrototype:dataPrototype controller:controller configurator:^(UITableViewCell *cell, ManagedObject *object) {
+            cell.textLabel.text = @"From CoreData";
+            cell.detailTextLabel.text = object.name;
+        }];
 
-        _behavior = [[SPLCompoundBehavior alloc] initWithBehaviors:@[ section0, arrayBehavior2 ]];
+        SPLSectionBehavior *section0 = [[SPLSectionBehavior alloc] initWithTitle:@"Section 0" behaviors:@[ b1, arrayBehavior1 ]];
+        SPLSectionBehavior *section2 = [[SPLSectionBehavior alloc] initWithTitle:@"CoreData section" behaviors:@[ coreDataBehavior ]];
+
+        _behavior = [[SPLCompoundBehavior alloc] initWithBehaviors:@[ section0, arrayBehavior2, section2 ]];
     }
     return self;
 }
@@ -73,8 +88,37 @@
     self.tableView.dataSource = self.behavior;
     self.tableView.delegate = self.behavior;
     self.tableView.rowHeight = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone ? 66.0 : 88.0;
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        NSLog(@"Timer");
+    });
 }
 
 #pragma mark - Private category implementation ()
+
+- (void)_seedDemoDataAtDate:(NSDate *)date
+{
+    NSManagedObjectContext *context = [CoreDataStack sharedInstance].mainThreadManagedObjectContext;
+
+    for (int i = 0; i < 10; i++) {
+        ManagedObject *object = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([ManagedObject class])
+                                                              inManagedObjectContext:context];
+        object.name = [NSString stringWithFormat:@"CoreData Object %d", i];
+        object.date = date;
+    }
+
+    NSError *saveError = nil;
+    [context save:&saveError];
+    NSCAssert(saveError == nil, @"error saving managed object context: %@", saveError);
+}
+
+- (NSFetchRequest *)_fetchRequestAtDate:(NSDate *)date
+{
+    NSFetchRequest *result = [[NSFetchRequest alloc] initWithEntityName:NSStringFromClass([ManagedObject class])];
+    result.predicate = [NSPredicate predicateWithFormat:@"date == %@", date];
+    result.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES] ];
+
+    return result;
+}
 
 @end

@@ -28,8 +28,6 @@
 
 @interface SPLArrayBehavior ()
 
-@property (nonatomic, readonly) NSArray *data;
-
 @property (nonatomic, copy) void(^handler)(id object);
 @property (nonatomic, readonly) void(^configurator)(UITableViewCell *cell, id object);
 @property (nonatomic, readonly) UITableViewCellPrototypeDeque deque;

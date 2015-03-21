@@ -28,7 +28,7 @@
 
 
 
-@interface SPLSectionBehavior ()
+@interface SPLSectionBehavior () <SPLTableViewUpdate>
 
 @end
 
@@ -48,6 +48,10 @@
     if (self = [super init]) {
         _title = title.copy;
         _behaviors = behaviors.copy;
+
+        for (id<SPLTableViewBehavior> behavior in _behaviors) {
+            behavior.update = self;
+        }
     }
     return self;
 }
@@ -156,7 +160,68 @@
     return self.title;
 }
 
+#pragma mark - SPLTableViewUpdate
+
+- (void)tableViewBehaviorBeginUpdates:(id<SPLTableViewBehavior>)tableViewBehavior
+{
+    [self.update tableViewBehaviorBeginUpdates:self];
+}
+
+- (void)tableViewBehaviorEndUpdates:(id<SPLTableViewBehavior>)tableViewBehavior
+{
+    [self.update tableViewBehaviorEndUpdates:self];
+}
+
+- (void)insertRowsAtIndexPaths:(NSArray *)indexPaths withRowAnimation:(UITableViewRowAnimation)animation fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
+{
+    NSMutableArray *newIndexPaths = [NSMutableArray array];
+    for (NSIndexPath *indexPath in indexPaths) {
+        [newIndexPaths addObject:[self _convertIndexPath:indexPath fromTableViewBehavior:tableViewBehavior]];
+    }
+
+    [self.update insertRowsAtIndexPaths:newIndexPaths withRowAnimation:animation fromTableViewBehavior:self];
+}
+
+- (void)deleteRowsAtIndexPaths:(NSArray *)indexPaths withRowAnimation:(UITableViewRowAnimation)animation fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
+{
+    NSMutableArray *newIndexPaths = [NSMutableArray array];
+    for (NSIndexPath *indexPath in indexPaths) {
+        [newIndexPaths addObject:[self _convertIndexPath:indexPath fromTableViewBehavior:tableViewBehavior]];
+    }
+
+    [self.update deleteRowsAtIndexPaths:newIndexPaths withRowAnimation:animation fromTableViewBehavior:self];
+}
+
+- (void)reloadRowsAtIndexPaths:(NSArray *)indexPaths withRowAnimation:(UITableViewRowAnimation)animation fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
+{
+    NSMutableArray *newIndexPaths = [NSMutableArray array];
+    for (NSIndexPath *indexPath in indexPaths) {
+        [newIndexPaths addObject:[self _convertIndexPath:indexPath fromTableViewBehavior:tableViewBehavior]];
+    }
+
+    [self.update reloadRowsAtIndexPaths:newIndexPaths withRowAnimation:animation fromTableViewBehavior:self];
+}
+
+- (void)moveRowAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
+{
+    [self.update moveRowAtIndexPath:[self _convertIndexPath:indexPath fromTableViewBehavior:tableViewBehavior]
+                        toIndexPath:[self _convertIndexPath:newIndexPath fromTableViewBehavior:tableViewBehavior]
+              fromTableViewBehavior:self];
+}
+
 #pragma mark - Private category implementation ()
+
+- (NSIndexPath *)_convertIndexPath:(NSIndexPath *)indexPath fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
+{
+    NSInteger index = [self.behaviors indexOfObject:tableViewBehavior];
+
+    NSInteger count = 0;
+    for (id<SPLTableViewBehavior> behavior in [self.behaviors subarrayWithRange:NSMakeRange(0, index)]) {
+        count += [behavior tableView:nil numberOfRowsInSection:0];
+    }
+
+    return [NSIndexPath indexPathForRow:count + indexPath.row inSection:index];
+}
 
 - (BOOL)_canForwardSelector:(SEL)selector inProtocol:(Protocol *)protocol
 {

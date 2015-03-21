@@ -35,8 +35,8 @@
 
 @property (nonatomic, weak) id<SPLTableViewUpdate> update;
 
-@property (nonatomic, readonly) NSString *title;
-@property (nonatomic, readonly) NSArray *behaviors;
+@property (nonatomic, copy, readonly) NSString *title;
+@property (nonatomic, copy, readonly) NSArray *behaviors;
 
 - (instancetype)init UNAVAILABLE_ATTRIBUTE;
 - (instancetype)initWithBehaviors:(NSArray *)behaviors;

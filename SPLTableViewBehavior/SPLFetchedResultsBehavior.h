@@ -1,5 +1,5 @@
 /*
- SPLCompoundBehavior.h
+ SPLFetchedResultsBehavior.h
  Copyright (c) 2015 Oliver Letterer <oliver.letterer@gmail.com>, Sparrow-Labs
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,6 +22,7 @@
  */
 
 #import <UIKit/UIKit.h>
+#import <CoreData/CoreData.h>
 
 #import <SPLTableViewBehavior/SPLTableViewBehaviorProtocol.h>
 
@@ -30,13 +31,14 @@
 /**
  @abstract  <#abstract comment#>
  */
-@interface SPLCompoundBehavior : NSObject <SPLTableViewBehavior>
+@interface SPLFetchedResultsBehavior : NSObject <SPLTableViewBehavior, NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, weak) id<SPLTableViewUpdate> update;
 
-@property (nonatomic, copy, readonly) NSArray *behaviors;
+@property (nonatomic, readonly) NSFetchedResultsController *controller;
 
 - (instancetype)init UNAVAILABLE_ATTRIBUTE;
-- (instancetype)initWithBehaviors:(NSArray *)behaviors NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithPrototype:(UITableViewCell *)prototype controller:(NSFetchedResultsController *)controller configurator:(void(^)(UITableViewCell *cell, id object))configurator;
+- (instancetype)initWithPrototype:(UITableViewCell *)prototype controller:(NSFetchedResultsController *)controller configurator:(void(^)(UITableViewCell *cell, id object))configurator handler:(void(^)(id object))handler NS_DESIGNATED_INITIALIZER;
 
 @end
