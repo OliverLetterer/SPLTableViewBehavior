@@ -30,8 +30,6 @@
 
 @interface SPLSectionBehavior ()
 
-@property (nonatomic, readonly) NSArray *behaviors;
-
 @end
 
 
@@ -42,8 +40,14 @@
 
 - (instancetype)initWithBehaviors:(NSArray *)behaviors
 {
+    return [self initWithTitle:nil behaviors:behaviors];
+}
+
+- (instancetype)initWithTitle:(NSString *)title behaviors:(NSArray *)behaviors
+{
     if (self = [super init]) {
-        _behaviors = behaviors;
+        _title = title.copy;
+        _behaviors = behaviors.copy;
     }
     return self;
 }
@@ -54,6 +58,10 @@
 {
     if ([super respondsToSelector:aSelector]) {
         return YES;
+    }
+
+    if (aSelector == @selector(tableView:titleForHeaderInSection:)) {
+        return self.title != nil;
     }
 
     NSArray *protocols = @[ @protocol(UITableViewDataSource), @protocol(UITableViewDelegate) ];
@@ -109,7 +117,7 @@
     [invocation getArgument:&indexPath atIndex:indexPathIndex];
 
     NSIndexPath *childIndexPath = nil;
-    id<SPLTableViewBehavior> behavior = [self _behaviorForTableView:tableView atndexPath:indexPath childIndexPath:&childIndexPath];
+    id<SPLTableViewBehavior> behavior = [self _behaviorForTableView:tableView atIndexPath:indexPath childIndexPath:&childIndexPath];
 
     if ([behavior respondsToSelector:invocation.selector]) {
         [invocation setArgument:&childIndexPath atIndex:indexPathIndex];
@@ -130,7 +138,7 @@
     NSInteger numberOfRows = 0;
 
     for (id<SPLTableViewBehavior> behavior in self.behaviors) {
-        numberOfRows += [behavior tableView:tableView numberOfRowsInSection:1];
+        numberOfRows += [behavior tableView:tableView numberOfRowsInSection:0];
     }
 
     return numberOfRows;
@@ -139,8 +147,13 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSIndexPath *childIndexPath = nil;
-    id<SPLTableViewBehavior> behavior = [self _behaviorForTableView:tableView atndexPath:indexPath childIndexPath:&childIndexPath];
+    id<SPLTableViewBehavior> behavior = [self _behaviorForTableView:tableView atIndexPath:indexPath childIndexPath:&childIndexPath];
     return [behavior tableView:tableView cellForRowAtIndexPath:childIndexPath];
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    return self.title;
 }
 
 #pragma mark - Private category implementation ()
@@ -169,7 +182,7 @@
     return NO;
 }
 
-- (id<SPLTableViewBehavior>)_behaviorForTableView:(UITableView *)tableView atndexPath:(NSIndexPath *)indexPath childIndexPath:(out NSIndexPath **)childIndexPath
+- (id<SPLTableViewBehavior>)_behaviorForTableView:(UITableView *)tableView atIndexPath:(NSIndexPath *)indexPath childIndexPath:(out NSIndexPath **)childIndexPath
 {
     NSInteger currentIndex = 0;
     NSRange currentRange = NSMakeRange(0, [self.behaviors[currentIndex] tableView:tableView numberOfRowsInSection:1]);

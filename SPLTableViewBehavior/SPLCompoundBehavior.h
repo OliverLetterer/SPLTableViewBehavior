@@ -1,5 +1,5 @@
 /*
- SPLSectionBehavior.h
+ SPLCompoundBehavior.h
  Copyright (c) 2015 Oliver Letterer <oliver.letterer@gmail.com>, Sparrow-Labs
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,22 +24,17 @@
 #import <UIKit/UIKit.h>
 
 #import <SPLTableViewBehavior/SPLTableViewBehaviorProtocol.h>
-#import <SPLTableViewBehavior/UITableView+SPLTableViewUpdate.h>
 
 
 
 /**
  @abstract  <#abstract comment#>
  */
-@interface SPLSectionBehavior : NSObject <SPLTableViewBehavior>
+@interface SPLCompoundBehavior : NSObject <SPLTableViewBehavior>
 
 @property (nonatomic, weak) id<SPLTableViewUpdate> update;
 
-@property (nonatomic, readonly) NSString *title;
-@property (nonatomic, readonly) NSArray *behaviors;
-
 - (instancetype)init UNAVAILABLE_ATTRIBUTE;
-- (instancetype)initWithBehaviors:(NSArray *)behaviors;
-- (instancetype)initWithTitle:(NSString *)title behaviors:(NSArray *)behaviors NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithBehaviors:(NSArray *)behaviors NS_DESIGNATED_INITIALIZER;
 
 @end

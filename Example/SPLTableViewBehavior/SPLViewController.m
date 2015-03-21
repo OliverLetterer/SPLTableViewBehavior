@@ -20,8 +20,6 @@
 
 @implementation SPLViewController
 
-#pragma mark - setters and getters
-
 #pragma mark - Initialization
 
 - (instancetype)init
@@ -42,15 +40,24 @@
             [self.navigationController pushViewController:[[SPLViewController alloc] init] animated:YES];
         }];
 
-        NSArray *data = @[ @"Object 1", @"Object 2", @"Object 3" ];
-        SPLArrayBehavior *arrayBehavior = [[SPLArrayBehavior alloc] initWithPrototype:dataPrototype data:data configurator:^(UITableViewCell *cell, NSString *object) {
-            cell.textLabel.text = @"Data:";
+        NSArray *data1 = @[ @"Object 1", @"Object 2", @"Object 3" ];
+        SPLArrayBehavior *arrayBehavior1 = [[SPLArrayBehavior alloc] initWithPrototype:dataPrototype data:data1 configurator:^(UITableViewCell *cell, NSString *object) {
+            cell.textLabel.text = @"Section 0";
             cell.detailTextLabel.text = object;
         } handler:^(NSString *object) {
             NSLog(@"Do something with %@", object);
         }];
 
-        _behavior = [[SPLSectionBehavior alloc] initWithBehaviors:@[ b1, arrayBehavior ]];
+        NSArray *data2 = @[ @"Second 1", @"Second 2", @"Second 3", @"Second 4", @"Second 5", @"Second 6" ];
+        SPLArrayBehavior *arrayBehavior2 = [[SPLArrayBehavior alloc] initWithPrototype:dataPrototype data:data2 configurator:^(UITableViewCell *cell, NSString *object) {
+            cell.textLabel.text = @"Section 1";
+            cell.detailTextLabel.text = object;
+        }];
+
+        SPLSectionBehavior *section0 = [[SPLSectionBehavior alloc] initWithTitle:@"Section 0" behaviors:@[ b1, arrayBehavior1 ]];
+//        SPLSectionBehavior *section1 = [[SPLSectionBehavior alloc] initWithTitle:@"Section 1" behaviors:@[ arrayBehavior2 ]];
+
+        _behavior = [[SPLCompoundBehavior alloc] initWithBehaviors:@[ section0, arrayBehavior2 ]];
     }
     return self;
 }

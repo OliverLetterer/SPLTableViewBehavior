@@ -29,6 +29,7 @@
 
 #import <SPLTableViewBehavior/SPLSectionBehavior.h>
 #import <SPLTableViewBehavior/SPLArrayBehavior.h>
+#import <SPLTableViewBehavior/SPLCompoundBehavior.h>
 
 
 
