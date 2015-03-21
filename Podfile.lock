@@ -1,0 +1,17 @@
+PODS:
+  - Expecta (0.3.2)
+  - SPLTableViewBehavior (0.1.0)
+
+DEPENDENCIES:
+  - Expecta
+  - SPLTableViewBehavior (from `.`)
+
+EXTERNAL SOURCES:
+  SPLTableViewBehavior:
+    :path: .
+
+SPEC CHECKSUMS:
+  Expecta: ee641011fe10aa1855d487b40e4976dac50ec342
+  SPLTableViewBehavior: 30a2c5f9bb4799e82a5d08966795b16a0290a9df
+
+COCOAPODS: 0.36.0

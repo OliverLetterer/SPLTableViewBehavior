@@ -10,21 +10,18 @@
 Pod::Spec.new do |s|
   s.name             = "SPLTableViewBehavior"
   s.version          = "0.1.0"
-  s.summary          = "A short description of SPLTableViewBehavior."
+  s.summary          = "Lightweight, reusable and composable UITableViewDataSources/Delegates."
   s.homepage         = "https://github.com/OliverLetterer/SPLTableViewBehavior"
   s.license          = 'MIT'
   s.author           = { "Oliver Letterer" => "oliver.letterer@gmail.com" }
   s.source           = { :git => "https://github.com/OliverLetterer/SPLTableViewBehavior.git", :tag => s.version.to_s }
   s.social_media_url = 'https://twitter.com/oletterer'
 
-  s.platform     = :ios, '7.0'
+  s.platform     = :ios, '8.0'
   s.requires_arc = true
 
-  s.source_files = 'SPLTableViewBehavior'
-  # s.resource_bundles = {
-  #   'SPLTableViewBehavior' => [ 'SPLTableViewBehavior/Resources/*' ]
-  # }
+  s.source_files = 'SPLTableViewBehavior', 'SPLTableViewBehavior/Private'
+  s.private_header_files = "SPLTableViewBehavior/Private/*.h"
 
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+  s.frameworks = 'UIKit'
 end

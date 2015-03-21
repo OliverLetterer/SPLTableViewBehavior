@@ -6,8 +6,8 @@
 //  Copyright (c) 2014 Oliver Letterer. All rights reserved.
 //
 
-@import UIKit;
+#import <UIKit/UIKit.h>
 
-@interface SPLViewController : UIViewController
+@interface SPLViewController : UITableViewController
 
 @end
