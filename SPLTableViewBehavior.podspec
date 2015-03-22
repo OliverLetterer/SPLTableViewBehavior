@@ -9,8 +9,8 @@
 
 Pod::Spec.new do |s|
   s.name             = "SPLTableViewBehavior"
-  s.version          = "0.1.0"
-  s.summary          = "Lightweight, reusable and composable UITableViewDataSources/Delegates."
+  s.version          = "0.4.0"
+  s.summary          = "Define a UITableView behavior with lightweight, reusable and composable components."
   s.homepage         = "https://github.com/OliverLetterer/SPLTableViewBehavior"
   s.license          = 'MIT'
   s.author           = { "Oliver Letterer" => "oliver.letterer@gmail.com" }
