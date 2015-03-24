@@ -39,7 +39,7 @@
 @property (nonatomic, copy) void(^deletionHandler)(id object);
 
 - (instancetype)init UNAVAILABLE_ATTRIBUTE;
-- (instancetype)initWithPrototype:(UITableViewCell *)prototype controller:(NSFetchedResultsController *)controller configurator:(void(^)(UITableViewCell *cell, id object))configurator;
-- (instancetype)initWithPrototype:(UITableViewCell *)prototype controller:(NSFetchedResultsController *)controller configurator:(void(^)(UITableViewCell *cell, id object))configurator handler:(void(^)(id object))handler NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithPrototype:(UITableViewCell *)prototype controller:(NSFetchedResultsController *)controller configurator:(void(^)(id cell, id object))configurator;
+- (instancetype)initWithPrototype:(UITableViewCell *)prototype controller:(NSFetchedResultsController *)controller configurator:(void(^)(id cell, id object))configurator handler:(void(^)(id object))handler NS_DESIGNATED_INITIALIZER;
 
 @end

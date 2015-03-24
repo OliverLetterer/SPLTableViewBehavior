@@ -42,7 +42,7 @@
 @property (nonatomic, weak) id<SPLTableViewUpdate> update;
 
 - (instancetype)init UNAVAILABLE_ATTRIBUTE;
-- (instancetype)initWithPrototype:(UITableViewCell *)prototype configurator:(void(^)(UITableViewCell *cell))configurator;
-- (instancetype)initWithPrototype:(UITableViewCell *)prototype configurator:(void(^)(UITableViewCell *cell))configurator handler:(dispatch_block_t)handler NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithPrototype:(UITableViewCell *)prototype configurator:(void(^)(id cell))configurator;
+- (instancetype)initWithPrototype:(UITableViewCell *)prototype configurator:(void(^)(id cell))configurator handler:(dispatch_block_t)handler NS_DESIGNATED_INITIALIZER;
 
 @end

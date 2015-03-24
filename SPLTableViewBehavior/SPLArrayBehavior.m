@@ -32,7 +32,7 @@
 @property (nonatomic, readonly) NSMutableArray *mutableData;
 
 @property (nonatomic, copy) void(^handler)(id object);
-@property (nonatomic, readonly) void(^configurator)(UITableViewCell *cell, id object);
+@property (nonatomic, readonly) void(^configurator)(id cell, id object);
 @property (nonatomic, readonly) UITableViewCellPrototypeDeque deque;
 
 @end
@@ -50,12 +50,12 @@
 
 #pragma mark - Initialization
 
-- (instancetype)initWithPrototype:(UITableViewCell *)prototype data:(NSArray *)data configurator:(void(^)(UITableViewCell *cell, id object))configurator
+- (instancetype)initWithPrototype:(UITableViewCell *)prototype data:(NSArray *)data configurator:(void(^)(id cell, id object))configurator
 {
     return [self initWithPrototype:prototype data:data configurator:configurator handler:nil];
 }
 
-- (instancetype)initWithPrototype:(UITableViewCell *)prototype data:(NSArray *)data configurator:(void(^)(UITableViewCell *cell, id object))configurator handler:(void(^)(id object))handler
+- (instancetype)initWithPrototype:(UITableViewCell *)prototype data:(NSArray *)data configurator:(void(^)(id cell, id object))configurator handler:(void(^)(id object))handler
 {
     if (self = [super init]) {
         _data = data.copy;

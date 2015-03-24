@@ -29,7 +29,7 @@
 @interface SPLTableViewBehavior ()
 
 @property (nonatomic, readonly) dispatch_block_t handler;
-@property (nonatomic, readonly) void(^configurator)(UITableViewCell *cell);
+@property (nonatomic, readonly) void(^configurator)(id cell);
 @property (nonatomic, readonly) UITableViewCellPrototypeDeque deque;
 
 @end
@@ -40,12 +40,12 @@
 
 #pragma mark - Initialization
 
-- (instancetype)initWithPrototype:(UITableViewCell *)prototype configurator:(void(^)(UITableViewCell *cell))configurator
+- (instancetype)initWithPrototype:(UITableViewCell *)prototype configurator:(void(^)(id cell))configurator
 {
     return [self initWithPrototype:prototype configurator:configurator handler:nil];
 }
 
-- (instancetype)initWithPrototype:(UITableViewCell *)prototype configurator:(void(^)(UITableViewCell *cell))configurator handler:(dispatch_block_t)handler
+- (instancetype)initWithPrototype:(UITableViewCell *)prototype configurator:(void(^)(id cell))configurator handler:(dispatch_block_t)handler
 {
     if (self = [super init]) {
         _deque = prototype.dequeBlock;
