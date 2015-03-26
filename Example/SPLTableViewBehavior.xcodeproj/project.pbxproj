@@ -21,6 +21,8 @@
 		6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
 		6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6003F5B8195388D20070C39A /* InfoPlist.strings */; };
 		6003F5BC195388D20070C39A /* Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F5BB195388D20070C39A /* Tests.m */; };
+		A7C1E2F81AC43A150086FCAF /* AdvancedPlaygroundViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7C1E2F71AC43A150086FCAF /* AdvancedPlaygroundViewController.m */; };
+		A7C1E2FB1AC43B360086FCAF /* VisibleSectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7C1E2FA1AC43B360086FCAF /* VisibleSectionViewController.m */; };
 		A7EB00381ABDF9D6008E84D3 /* CoreDataStack.m in Sources */ = {isa = PBXBuildFile; fileRef = A7EB00371ABDF9D6008E84D3 /* CoreDataStack.m */; };
 		A7EB003B1ABDFA06008E84D3 /* CoreDataStack.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A7EB00391ABDFA06008E84D3 /* CoreDataStack.xcdatamodeld */; };
 		A7EB003E1ABDFA69008E84D3 /* ManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = A7EB003D1ABDFA69008E84D3 /* ManagedObject.m */; };
@@ -64,6 +66,10 @@
 		6003F5B9195388D20070C39A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		6003F5BB195388D20070C39A /* Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tests.m; sourceTree = "<group>"; };
 		606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Prefix.pch"; sourceTree = "<group>"; };
+		A7C1E2F61AC43A150086FCAF /* AdvancedPlaygroundViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdvancedPlaygroundViewController.h; sourceTree = "<group>"; };
+		A7C1E2F71AC43A150086FCAF /* AdvancedPlaygroundViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdvancedPlaygroundViewController.m; sourceTree = "<group>"; };
+		A7C1E2F91AC43B360086FCAF /* VisibleSectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VisibleSectionViewController.h; sourceTree = "<group>"; };
+		A7C1E2FA1AC43B360086FCAF /* VisibleSectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VisibleSectionViewController.m; sourceTree = "<group>"; };
 		A7EB00361ABDF9D6008E84D3 /* CoreDataStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreDataStack.h; sourceTree = "<group>"; };
 		A7EB00371ABDF9D6008E84D3 /* CoreDataStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreDataStack.m; sourceTree = "<group>"; };
 		A7EB003A1ABDFA06008E84D3 /* CoreDataStack.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CoreDataStack.xcdatamodel; sourceTree = "<group>"; };
@@ -140,6 +146,10 @@
 				6003F59D195388D20070C39A /* SPLAppDelegate.m */,
 				6003F5A5195388D20070C39A /* SPLViewController.h */,
 				6003F5A6195388D20070C39A /* SPLViewController.m */,
+				A7C1E2F61AC43A150086FCAF /* AdvancedPlaygroundViewController.h */,
+				A7C1E2F71AC43A150086FCAF /* AdvancedPlaygroundViewController.m */,
+				A7C1E2F91AC43B360086FCAF /* VisibleSectionViewController.h */,
+				A7C1E2FA1AC43B360086FCAF /* VisibleSectionViewController.m */,
 				6003F5A8195388D20070C39A /* Images.xcassets */,
 				6003F594195388D20070C39A /* Supporting Files */,
 			);
@@ -368,6 +378,8 @@
 			files = (
 				6003F59E195388D20070C39A /* SPLAppDelegate.m in Sources */,
 				6003F5A7195388D20070C39A /* SPLViewController.m in Sources */,
+				A7C1E2F81AC43A150086FCAF /* AdvancedPlaygroundViewController.m in Sources */,
+				A7C1E2FB1AC43B360086FCAF /* VisibleSectionViewController.m in Sources */,
 				A7EB003E1ABDFA69008E84D3 /* ManagedObject.m in Sources */,
 				6003F59A195388D20070C39A /* main.m in Sources */,
 				A7EB003B1ABDFA06008E84D3 /* CoreDataStack.xcdatamodeld in Sources */,

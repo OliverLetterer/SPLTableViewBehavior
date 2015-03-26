@@ -38,6 +38,9 @@
 @property (nonatomic, copy, readonly) NSString *title;
 @property (nonatomic, copy, readonly) NSArray *behaviors;
 
+@property (nonatomic, copy) NSArray *visibleBehaviors;
+- (void)setVisibleBehaviors:(NSArray *)visibleBehaviors withRowAnimation:(UITableViewRowAnimation)animation;
+
 - (instancetype)init UNAVAILABLE_ATTRIBUTE;
 - (instancetype)initWithBehaviors:(NSArray *)behaviors;
 - (instancetype)initWithTitle:(NSString *)title behaviors:(NSArray *)behaviors NS_DESIGNATED_INITIALIZER;
