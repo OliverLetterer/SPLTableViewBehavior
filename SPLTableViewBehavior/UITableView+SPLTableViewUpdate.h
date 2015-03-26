@@ -29,6 +29,6 @@
 
 @interface UITableView (SPLTableViewUpdate)
 
-@property (nonatomic, readonly) id<SPLTableViewUpdate> update;
+@property (nonatomic, readonly) id<SPLTableViewUpdate> tableViewUpdate;
 
 @end

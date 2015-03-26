@@ -28,8 +28,8 @@
 
 @interface SPLFetchedResultsBehavior ()
 
-@property (nonatomic, copy) void(^handler)(id object);
-@property (nonatomic, readonly) void(^configurator)(id cell, id object);
+@property (nonatomic, copy) void(^action)(id object);
+@property (nonatomic, readonly) void(^configuration)(id cell, id object);
 @property (nonatomic, readonly) UITableViewCellPrototypeDeque deque;
 
 @end
@@ -40,12 +40,12 @@
 
 #pragma mark - Initialization
 
-- (instancetype)initWithPrototype:(UITableViewCell *)prototype controller:(NSFetchedResultsController *)controller configurator:(void(^)(id cell, id object))configurator
+- (instancetype)initWithPrototype:(UITableViewCell *)prototype controller:(NSFetchedResultsController *)controller configuration:(void(^)(id cell, id object))configuration
 {
-    return [self initWithPrototype:prototype controller:controller configurator:configurator handler:nil];
+    return [self initWithPrototype:prototype controller:controller configuration:configuration action:nil];
 }
 
-- (instancetype)initWithPrototype:(UITableViewCell *)prototype controller:(NSFetchedResultsController *)controller configurator:(void(^)(id cell, id object))configurator handler:(void(^)(id object))handler
+- (instancetype)initWithPrototype:(UITableViewCell *)prototype controller:(NSFetchedResultsController *)controller configuration:(void(^)(id cell, id object))configuration action:(void(^)(id object))action
 {
     if (self = [super init]) {
         if (controller.sectionNameKeyPath != nil) {
@@ -57,8 +57,8 @@
         [_controller performFetch:NULL];
 
         _deque = prototype.dequeBlock;
-        _configurator = configurator;
-        _handler = handler;
+        _configuration = configuration;
+        _action = action;
     }
     return self;
 }
@@ -68,7 +68,7 @@
 - (BOOL)respondsToSelector:(SEL)aSelector
 {
     if (aSelector == @selector(tableView:didSelectRowAtIndexPath:)) {
-        return self.handler != nil;
+        return self.action != nil;
     }
 
     if (aSelector == @selector(tableView:canEditRowAtIndexPath:) || aSelector == @selector(tableView:commitEditingStyle:forRowAtIndexPath:)) {
@@ -90,7 +90,7 @@
     UITableViewCell *cell = self.deque(tableView);
 
     id object = self.controller.fetchedObjects[indexPath.row];
-    self.configurator(cell, object);
+    self.configuration(cell, object);
 
     return cell;
 }
@@ -113,7 +113,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     id object = self.controller.fetchedObjects[indexPath.row];
-    self.handler(object);
+    self.action(object);
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

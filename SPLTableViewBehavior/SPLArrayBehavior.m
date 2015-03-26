@@ -31,8 +31,8 @@
 @property (nonatomic, copy) NSArray *data;
 @property (nonatomic, readonly) NSMutableArray *mutableData;
 
-@property (nonatomic, copy) void(^handler)(id object);
-@property (nonatomic, readonly) void(^configurator)(id cell, id object);
+@property (nonatomic, copy) void(^action)(id object);
+@property (nonatomic, readonly) void(^configuration)(id cell, id object);
 @property (nonatomic, readonly) UITableViewCellPrototypeDeque deque;
 
 @end
@@ -50,19 +50,19 @@
 
 #pragma mark - Initialization
 
-- (instancetype)initWithPrototype:(UITableViewCell *)prototype data:(NSArray *)data configurator:(void(^)(id cell, id object))configurator
+- (instancetype)initWithPrototype:(UITableViewCell *)prototype data:(NSArray *)data configuration:(void(^)(id cell, id object))configuration
 {
-    return [self initWithPrototype:prototype data:data configurator:configurator handler:nil];
+    return [self initWithPrototype:prototype data:data configuration:configuration action:nil];
 }
 
-- (instancetype)initWithPrototype:(UITableViewCell *)prototype data:(NSArray *)data configurator:(void(^)(id cell, id object))configurator handler:(void(^)(id object))handler
+- (instancetype)initWithPrototype:(UITableViewCell *)prototype data:(NSArray *)data configuration:(void(^)(id cell, id object))configuration action:(void(^)(id object))action
 {
     if (self = [super init]) {
         _data = data.copy;
 
         _deque = prototype.dequeBlock;
-        _configurator = configurator;
-        _handler = handler;
+        _configuration = configuration;
+        _action = action;
     }
     return self;
 }
@@ -72,7 +72,7 @@
 - (BOOL)respondsToSelector:(SEL)aSelector
 {
     if (aSelector == @selector(tableView:didSelectRowAtIndexPath:)) {
-        return self.handler != nil;
+        return self.action != nil;
     }
 
     if (aSelector == @selector(tableView:canEditRowAtIndexPath:) || aSelector == @selector(tableView:commitEditingStyle:forRowAtIndexPath:)) {
@@ -94,7 +94,7 @@
     UITableViewCell *cell = self.deque(tableView);
 
     id object = self.data[indexPath.row];
-    self.configurator(cell, object);
+    self.configuration(cell, object);
 
     return cell;
 }
@@ -120,7 +120,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     id object = self.data[indexPath.row];
-    self.handler(object);
+    self.action(object);
 }
 
 @end

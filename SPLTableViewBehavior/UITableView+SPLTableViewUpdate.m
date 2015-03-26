@@ -30,7 +30,7 @@
 
 @implementation UITableView (SPLTableViewUpdate)
 
-- (id<SPLTableViewUpdate>)update
+- (id<SPLTableViewUpdate>)tableViewUpdate
 {
     if (!objc_getAssociatedObject(self, _cmd)) {
         objc_setAssociatedObject(self, _cmd, [[_SPLUITableViewUpdate alloc] initWithTableView:self], OBJC_ASSOCIATION_RETAIN_NONATOMIC);

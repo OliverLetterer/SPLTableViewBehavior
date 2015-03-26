@@ -42,24 +42,24 @@
         dataPrototype.selectionStyle = UITableViewCellSelectionStyleNone;
 
         __weak typeof(self) weakSelf = self;
-        SPLTableViewBehavior *b1 = [[SPLTableViewBehavior alloc] initWithPrototype:actionPrototype configurator:^(UITableViewCell *cell) {
+        SPLTableViewBehavior *b1 = [[SPLTableViewBehavior alloc] initWithPrototype:actionPrototype configuration:^(UITableViewCell *cell) {
             cell.textLabel.text = @"Go to";
             cell.detailTextLabel.text = @"next view controller";
-        } handler:^{
+        } action:^(id cell) {
             __strong typeof(self) self = weakSelf;
             [self.navigationController pushViewController:[[SPLViewController alloc] init] animated:YES];
         }];
 
         NSArray *data1 = @[ @"Object 1", @"Object 2", @"Object 3" ];
-        SPLArrayBehavior *arrayBehavior1 = [[SPLArrayBehavior alloc] initWithPrototype:dataPrototype data:data1 configurator:^(UITableViewCell *cell, NSString *object) {
+        SPLArrayBehavior *arrayBehavior1 = [[SPLArrayBehavior alloc] initWithPrototype:dataPrototype data:data1 configuration:^(UITableViewCell *cell, NSString *object) {
             cell.textLabel.text = @"Section 0";
             cell.detailTextLabel.text = object;
-        } handler:^(NSString *object) {
+        } action:^(NSString *object) {
             NSLog(@"Do something with %@", object);
         }];
 
         NSArray *data2 = @[ @"Second 1", @"Second 2", @"Second 3", @"Second 4", @"Second 5", @"Second 6" ];
-        SPLArrayBehavior *arrayBehavior2 = [[SPLArrayBehavior alloc] initWithPrototype:dataPrototype data:data2 configurator:^(UITableViewCell *cell, NSString *object) {
+        SPLArrayBehavior *arrayBehavior2 = [[SPLArrayBehavior alloc] initWithPrototype:dataPrototype data:data2 configuration:^(UITableViewCell *cell, NSString *object) {
             cell.textLabel.text = @"Section 1";
             cell.detailTextLabel.text = object;
         }];
@@ -67,7 +67,7 @@
             NSLog(@"Do something with deleted object: %@", object);
         }];
 
-        SPLFetchedResultsBehavior *coreDataBehavior = [[SPLFetchedResultsBehavior alloc] initWithPrototype:dataPrototype controller:controller configurator:^(UITableViewCell *cell, ManagedObject *object) {
+        SPLFetchedResultsBehavior *coreDataBehavior = [[SPLFetchedResultsBehavior alloc] initWithPrototype:dataPrototype controller:controller configuration:^(UITableViewCell *cell, ManagedObject *object) {
             cell.textLabel.text = @"From CoreData";
             cell.detailTextLabel.text = object.name;
         }];
@@ -93,7 +93,7 @@
 {
     [super viewDidLoad];
 
-    self.behavior.update = self.tableView.update;
+    self.behavior.update = self.tableView.tableViewUpdate;
 
     self.tableView.dataSource = self.behavior;
     self.tableView.delegate = self.behavior;

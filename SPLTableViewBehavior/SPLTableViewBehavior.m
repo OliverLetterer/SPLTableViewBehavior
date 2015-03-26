@@ -28,8 +28,8 @@
 
 @interface SPLTableViewBehavior ()
 
-@property (nonatomic, readonly) dispatch_block_t handler;
-@property (nonatomic, readonly) void(^configurator)(id cell);
+@property (nonatomic, readonly) void(^action)(id cell);
+@property (nonatomic, readonly) void(^configuration)(id cell);
 @property (nonatomic, readonly) UITableViewCellPrototypeDeque deque;
 
 @end
@@ -40,17 +40,17 @@
 
 #pragma mark - Initialization
 
-- (instancetype)initWithPrototype:(UITableViewCell *)prototype configurator:(void(^)(id cell))configurator
+- (instancetype)initWithPrototype:(UITableViewCell *)prototype configuration:(void(^)(id cell))configuration
 {
-    return [self initWithPrototype:prototype configurator:configurator handler:nil];
+    return [self initWithPrototype:prototype configuration:configuration action:nil];
 }
 
-- (instancetype)initWithPrototype:(UITableViewCell *)prototype configurator:(void(^)(id cell))configurator handler:(dispatch_block_t)handler
+- (instancetype)initWithPrototype:(UITableViewCell *)prototype configuration:(void(^)(id cell))configuration action:(void(^)(id cell))action
 {
     if (self = [super init]) {
         _deque = prototype.dequeBlock;
-        _configurator = configurator;
-        _handler = handler;
+        _configuration = configuration;
+        _action = action;
     }
     return self;
 }
@@ -60,7 +60,7 @@
 - (BOOL)respondsToSelector:(SEL)aSelector
 {
     if (aSelector == @selector(tableView:didSelectRowAtIndexPath:)) {
-        return self.handler != nil;
+        return self.action != nil;
     }
 
     return [super respondsToSelector:aSelector];
@@ -76,7 +76,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = self.deque(tableView);
-    self.configurator(cell);
+    self.configuration(cell);
     return cell;
 }
 
@@ -84,7 +84,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    self.handler();
+    self.action([tableView cellForRowAtIndexPath:indexPath]);
 }
 
 @end
