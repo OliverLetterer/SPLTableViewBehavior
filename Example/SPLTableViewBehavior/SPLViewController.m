@@ -10,6 +10,7 @@
 #import "AdvancedPlaygroundViewController.h"
 #import "VisibleSectionViewController.h"
 #import "NestedCompoundViewController.h"
+#import "ComplexVisibilityChangesViewController.h"
 
 #import <SPLTableViewBehavior/SPLTableViewBehavior.h>
 
@@ -54,7 +55,14 @@
             [self.navigationController pushViewController:[[NestedCompoundViewController alloc] init] animated:YES];
         }];
 
-        _behavior = [[SPLSectionBehavior alloc] initWithTitle:@"Paygrounds" behaviors:@[ complexWithDeletion, visibleSections, nestedCompound ]];
+        SPLTableViewBehavior *complexVisibilityChanges = [[SPLTableViewBehavior alloc] initWithPrototype:actionPrototype configuration:^(UITableViewCell *cell) {
+            cell.textLabel.text = @"ComplexVisibilityChangesViewController";
+        } action:^(id cell) {
+            __strong typeof(self) self = weakSelf;
+            [self.navigationController pushViewController:[[ComplexVisibilityChangesViewController alloc] init] animated:YES];
+        }];
+
+        _behavior = [[SPLSectionBehavior alloc] initWithTitle:@"Paygrounds" behaviors:@[ complexWithDeletion, visibleSections, nestedCompound, complexVisibilityChanges ]];
     }
     return self;
 }

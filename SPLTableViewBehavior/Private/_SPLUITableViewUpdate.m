@@ -22,10 +22,14 @@
  */
 
 #import "_SPLUITableViewUpdate.h"
+#import "_SPLTableViewUpdateState.h"
 
 
 
 @interface _SPLUITableViewUpdate ()
+
+@property (nonatomic, assign) NSInteger updateLevel;
+@property (nonatomic, strong) _SPLTableViewUpdateState *state;
 
 @end
 
@@ -43,47 +47,111 @@
 
 - (void)tableViewBehaviorBeginUpdates:(id<SPLTableViewBehavior>)tableViewBehavior
 {
-    [self.tableView beginUpdates];
+    self.updateLevel++;
+
+    if (self.updateLevel == 1) {
+        self.state = [[_SPLTableViewUpdateState alloc] init];
+    }
 }
 
 - (void)tableViewBehaviorEndUpdates:(id<SPLTableViewBehavior>)tableViewBehavior
 {
-    [self.tableView endUpdates];
+    self.updateLevel--;
+
+    if (self.updateLevel == 0) {
+        [self _applyUpdateFromState:self.state];
+        self.state = nil;
+    }
 }
 
 - (void)insertRowsAtIndexPaths:(NSArray *)indexPaths withRowAnimation:(UITableViewRowAnimation)animation fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
 {
-    [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:animation];
+    if (self.updateLevel == 0) {
+        [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:animation];
+    } else {
+        [self.state insertRowsAtIndexPaths:indexPaths withRowAnimation:animation fromTableViewBehavior:tableViewBehavior];
+    }
 }
 
 - (void)deleteRowsAtIndexPaths:(NSArray *)indexPaths withRowAnimation:(UITableViewRowAnimation)animation fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
 {
-    [self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:animation];
+    if (self.updateLevel == 0) {
+        [self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:animation];
+    } else {
+        [self.state deleteRowsAtIndexPaths:indexPaths withRowAnimation:animation fromTableViewBehavior:tableViewBehavior];
+    }
 }
 
 - (void)reloadRowsAtIndexPaths:(NSArray *)indexPaths withRowAnimation:(UITableViewRowAnimation)animation fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior;
 {
-    [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:animation];
-}
-
-- (void)moveRowAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
-{
-    [self.tableView moveRowAtIndexPath:indexPath toIndexPath:newIndexPath];
+    if (self.updateLevel == 0) {
+        [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:animation];
+    } else {
+        [self.state reloadRowsAtIndexPaths:indexPaths withRowAnimation:animation fromTableViewBehavior:tableViewBehavior];
+    }
 }
 
 - (void)insertSections:(NSIndexSet *)sections withRowAnimation:(UITableViewRowAnimation)animation fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
 {
-    [self.tableView insertSections:sections withRowAnimation:animation];
+    if (self.updateLevel == 0) {
+        [self.tableView insertSections:sections withRowAnimation:animation];
+    } else {
+        [self.state insertSections:sections withRowAnimation:animation fromTableViewBehavior:tableViewBehavior];
+    }
 }
 
 - (void)deleteSections:(NSIndexSet *)sections withRowAnimation:(UITableViewRowAnimation)animation fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
 {
-    [self.tableView deleteSections:sections withRowAnimation:animation];
+    if (self.updateLevel == 0) {
+        [self.tableView deleteSections:sections withRowAnimation:animation];
+    } else {
+        [self.state deleteSections:sections withRowAnimation:animation fromTableViewBehavior:tableViewBehavior];
+    }
 }
 
-- (void)reloadSections:(NSIndexSet *)sections withRowAnimation:(UITableViewRowAnimation)animation fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
+- (void)_applyUpdateFromState:(_SPLTableViewUpdateState *)state
 {
-    [self.tableView reloadSections:sections withRowAnimation:animation];
+    NSInteger totalChanges = state.deletedSections.count + state.insertedSections.count + state.deletedIndexPaths.count + state.insertedIndexPaths.count + state.updatedIndexPaths.count;
+
+    if (totalChanges > 50) {
+        return [self.tableView reloadData];
+    }
+
+    NSIndexPath *(^transform)(NSIndexPath *indexPath) = ^NSIndexPath *(NSIndexPath *indexPath) {
+        NSIndexPath *result = indexPath;
+
+        for (_SPLSectionUpdate *update in state.insertedSections) {
+            if (update.section <= result.section) {
+                result = [NSIndexPath indexPathForRow:result.row inSection:result.section + 1];
+            }
+        }
+
+        return result;
+    };
+
+    [self.tableView beginUpdates];
+
+    for (_SPLSectionUpdate *update in state.deletedSections) {
+        [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:update.section] withRowAnimation:update.animation];
+    }
+
+    for (_SPLSectionUpdate *update in state.insertedSections) {
+        [self.tableView insertSections:[NSIndexSet indexSetWithIndex:update.section] withRowAnimation:update.animation];
+    }
+
+    for (_SPLIndexPathUpdate *update in state.deletedIndexPaths) {
+        [self.tableView deleteRowsAtIndexPaths:@[ transform(update.indexPath) ] withRowAnimation:update.animation];
+    }
+
+    for (_SPLIndexPathUpdate *update in state.insertedIndexPaths) {
+        [self.tableView insertRowsAtIndexPaths:@[ transform(update.indexPath) ] withRowAnimation:update.animation];
+    }
+
+    for (_SPLIndexPathUpdate *update in state.updatedIndexPaths) {
+        [self.tableView reloadRowsAtIndexPaths:@[ transform(update.indexPath) ] withRowAnimation:update.animation];
+    }
+
+    [self.tableView endUpdates];
 }
 
 @end

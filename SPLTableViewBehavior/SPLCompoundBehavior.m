@@ -258,17 +258,6 @@
     [self.update reloadRowsAtIndexPaths:newIndexPaths withRowAnimation:animation fromTableViewBehavior:self];
 }
 
-- (void)moveRowAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
-{
-    if (![self.visibleBehaviors containsObject:tableViewBehavior]) {
-        return;
-    }
-
-    [self.update moveRowAtIndexPath:[self _convertIndexPath:indexPath fromTableViewBehavior:tableViewBehavior]
-                        toIndexPath:[self _convertIndexPath:newIndexPath fromTableViewBehavior:tableViewBehavior]
-              fromTableViewBehavior:self];
-}
-
 - (void)insertSections:(NSIndexSet *)sections withRowAnimation:(UITableViewRowAnimation)animation fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
 {
     NSMutableIndexSet *newSections = [NSMutableIndexSet indexSet];
@@ -287,16 +276,6 @@
     }];
 
     [self.update deleteSections:newSections withRowAnimation:animation fromTableViewBehavior:self];
-}
-
-- (void)reloadSections:(NSIndexSet *)sections withRowAnimation:(UITableViewRowAnimation)animation fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
-{
-    NSMutableIndexSet *newSections = [NSMutableIndexSet indexSet];
-    [sections enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-        [newSections addIndex:[self _convertSection:idx fromTableViewBehavior:tableViewBehavior]];
-    }];
-
-    [self.update reloadSections:newSections withRowAnimation:animation fromTableViewBehavior:self];
 }
 
 #pragma mark - Private category implementation ()

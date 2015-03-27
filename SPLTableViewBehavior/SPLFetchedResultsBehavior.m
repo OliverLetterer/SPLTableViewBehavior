@@ -141,7 +141,8 @@
             [self.update reloadRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationNone fromTableViewBehavior:self];
             break;
         } case NSFetchedResultsChangeMove: {
-            [self.update moveRowAtIndexPath:indexPath toIndexPath:newIndexPath fromTableViewBehavior:self];
+            [self.update insertRowsAtIndexPaths:@[ newIndexPath ] withRowAnimation:UITableViewRowAnimationTop fromTableViewBehavior:self];
+            [self.update deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationTop fromTableViewBehavior:self];
             break;
         }
     }

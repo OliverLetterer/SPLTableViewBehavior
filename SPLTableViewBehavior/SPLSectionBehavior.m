@@ -250,28 +250,12 @@
     [self.update reloadRowsAtIndexPaths:newIndexPaths withRowAnimation:animation fromTableViewBehavior:self];
 }
 
-- (void)moveRowAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
-{
-    if (![self.visibleBehaviors containsObject:tableViewBehavior]) {
-        return;
-    }
-
-    [self.update moveRowAtIndexPath:[self _convertIndexPath:indexPath fromTableViewBehavior:tableViewBehavior]
-                        toIndexPath:[self _convertIndexPath:newIndexPath fromTableViewBehavior:tableViewBehavior]
-              fromTableViewBehavior:self];
-}
-
 - (void)insertSections:(NSIndexSet *)sections withRowAnimation:(UITableViewRowAnimation)animation fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
 {
     [self doesNotRecognizeSelector:_cmd];
 }
 
 - (void)deleteSections:(NSIndexSet *)sections withRowAnimation:(UITableViewRowAnimation)animation fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
-{
-    [self doesNotRecognizeSelector:_cmd];
-}
-
-- (void)reloadSections:(NSIndexSet *)sections withRowAnimation:(UITableViewRowAnimation)animation fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
 {
     [self doesNotRecognizeSelector:_cmd];
 }
