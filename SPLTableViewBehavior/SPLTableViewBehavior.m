@@ -84,7 +84,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    self.action([tableView cellForRowAtIndexPath:indexPath]);
+    self.action([tableView cellForRowAtIndexPath:tableView.indexPathForSelectedRow]);
 }
 
 @end
