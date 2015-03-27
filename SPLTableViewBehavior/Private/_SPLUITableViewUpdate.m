@@ -113,7 +113,7 @@
 {
     NSInteger totalChanges = state.deletedSections.count + state.insertedSections.count + state.deletedIndexPaths.count + state.insertedIndexPaths.count + state.updatedIndexPaths.count;
 
-    if (totalChanges > 50) {
+    if (totalChanges > 50 || !self.tableView.window) {
         return [self.tableView reloadData];
     }
 
