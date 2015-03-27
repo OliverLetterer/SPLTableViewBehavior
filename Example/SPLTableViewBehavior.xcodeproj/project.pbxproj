@@ -21,6 +21,7 @@
 		6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
 		6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6003F5B8195388D20070C39A /* InfoPlist.strings */; };
 		6003F5BC195388D20070C39A /* Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F5BB195388D20070C39A /* Tests.m */; };
+		A73456991AC54EB500152186 /* NestedCompoundViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A73456981AC54EB500152186 /* NestedCompoundViewController.m */; };
 		A7C1E2F81AC43A150086FCAF /* AdvancedPlaygroundViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7C1E2F71AC43A150086FCAF /* AdvancedPlaygroundViewController.m */; };
 		A7C1E2FB1AC43B360086FCAF /* VisibleSectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7C1E2FA1AC43B360086FCAF /* VisibleSectionViewController.m */; };
 		A7EB00381ABDF9D6008E84D3 /* CoreDataStack.m in Sources */ = {isa = PBXBuildFile; fileRef = A7EB00371ABDF9D6008E84D3 /* CoreDataStack.m */; };
@@ -66,6 +67,8 @@
 		6003F5B9195388D20070C39A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		6003F5BB195388D20070C39A /* Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tests.m; sourceTree = "<group>"; };
 		606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Prefix.pch"; sourceTree = "<group>"; };
+		A73456971AC54EB500152186 /* NestedCompoundViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NestedCompoundViewController.h; sourceTree = "<group>"; };
+		A73456981AC54EB500152186 /* NestedCompoundViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NestedCompoundViewController.m; sourceTree = "<group>"; };
 		A7C1E2F61AC43A150086FCAF /* AdvancedPlaygroundViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdvancedPlaygroundViewController.h; sourceTree = "<group>"; };
 		A7C1E2F71AC43A150086FCAF /* AdvancedPlaygroundViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdvancedPlaygroundViewController.m; sourceTree = "<group>"; };
 		A7C1E2F91AC43B360086FCAF /* VisibleSectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VisibleSectionViewController.h; sourceTree = "<group>"; };
@@ -150,6 +153,8 @@
 				A7C1E2F71AC43A150086FCAF /* AdvancedPlaygroundViewController.m */,
 				A7C1E2F91AC43B360086FCAF /* VisibleSectionViewController.h */,
 				A7C1E2FA1AC43B360086FCAF /* VisibleSectionViewController.m */,
+				A73456971AC54EB500152186 /* NestedCompoundViewController.h */,
+				A73456981AC54EB500152186 /* NestedCompoundViewController.m */,
 				6003F5A8195388D20070C39A /* Images.xcassets */,
 				6003F594195388D20070C39A /* Supporting Files */,
 			);
@@ -377,6 +382,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6003F59E195388D20070C39A /* SPLAppDelegate.m in Sources */,
+				A73456991AC54EB500152186 /* NestedCompoundViewController.m in Sources */,
 				6003F5A7195388D20070C39A /* SPLViewController.m in Sources */,
 				A7C1E2F81AC43A150086FCAF /* AdvancedPlaygroundViewController.m in Sources */,
 				A7C1E2FB1AC43B360086FCAF /* VisibleSectionViewController.m in Sources */,

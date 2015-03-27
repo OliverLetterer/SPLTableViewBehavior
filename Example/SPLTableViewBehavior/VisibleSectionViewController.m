@@ -68,8 +68,6 @@
     return self;
 }
 
-#pragma mark - View lifecycle
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -80,7 +78,5 @@
     self.tableView.delegate = self.behavior;
     self.tableView.rowHeight = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone ? 66.0 : 88.0;
 }
-
-#pragma mark - Private category implementation ()
 
 @end

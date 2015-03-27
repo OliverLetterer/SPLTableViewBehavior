@@ -127,7 +127,7 @@
         [invocation getArgument:&section atIndex:sectionIndex];
 
         NSInteger childSection = 0;
-        id<SPLTableViewBehavior> behavior = self.behaviors[section];
+        id<SPLTableViewBehavior> behavior = [self _behaviorInSection:section childSection:&childSection];
 
         if ([behavior respondsToSelector:invocation.selector]) {
             [invocation setArgument:&childSection atIndex:sectionIndex];
@@ -146,12 +146,19 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return self.behaviors.count;
+    NSInteger count = 0;
+    for (id<SPLTableViewBehavior> behavior in self.behaviors) {
+        count += [self _sectionInBehavior:behavior];
+    }
+
+    return count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.behaviors[section] tableView:tableView numberOfRowsInSection:section];
+    NSInteger childSection = 0;
+    id<SPLTableViewBehavior> behavior = [self _behaviorInSection:section childSection:&childSection];
+    return [behavior tableView:tableView numberOfRowsInSection:childSection];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -212,10 +219,31 @@
 
 #pragma mark - Private category implementation ()
 
-- (NSIndexPath *)_convertIndexPath:(NSIndexPath *)indexPath fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
+- (NSInteger)_sectionInBehavior:(id<SPLTableViewBehavior>)behavior
+{
+    if ([behavior respondsToSelector:@selector(numberOfSectionsInTableView:)]) {
+        return [behavior numberOfSectionsInTableView:nil];
+    } else {
+        return 1;
+    }
+}
+
+- (NSInteger)_convertSection:(NSInteger)section fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
 {
     NSInteger index = [self.behaviors indexOfObject:tableViewBehavior];
-    return [NSIndexPath indexPathForRow:indexPath.row inSection:index];
+
+    NSInteger count = 0;
+    for (id<SPLTableViewBehavior> behavior in [self.behaviors subarrayWithRange:NSMakeRange(0, index)]) {
+        count += [self _sectionInBehavior:behavior];
+    }
+
+    return section + count;
+}
+
+- (NSIndexPath *)_convertIndexPath:(NSIndexPath *)indexPath fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
+{
+    NSInteger section = [self _convertSection:indexPath.section fromTableViewBehavior:tableViewBehavior];
+    return [NSIndexPath indexPathForRow:indexPath.row inSection:section];
 }
 
 - (BOOL)_isIndexPathBasedSelector:(SEL)selector
@@ -264,13 +292,33 @@
     return NO;
 }
 
-- (id<SPLTableViewBehavior>)_behaviorForIndexPath:(NSIndexPath *)indexPath childIndexPath:(out NSIndexPath **)childIndexPath
+- (id<SPLTableViewBehavior>)_behaviorInSection:(NSInteger)section childSection:(out NSInteger *)childSection
 {
-    if (childIndexPath) {
-        *childIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
+    NSInteger currentIndex = 0;
+    NSRange currentRange = NSMakeRange(0, [self _sectionInBehavior:self.behaviors[currentIndex]]);
+
+    while (!NSLocationInRange(section, currentRange)) {
+        currentIndex++;
+        currentRange = NSMakeRange(currentRange.location + currentRange.length, [self _sectionInBehavior:self.behaviors[currentIndex]]);
     }
 
-    return self.behaviors[indexPath.section];
+    if (childSection) {
+        *childSection = section - currentRange.location;
+    }
+
+    return self.behaviors[currentIndex];
+}
+
+- (id<SPLTableViewBehavior>)_behaviorForIndexPath:(NSIndexPath *)indexPath childIndexPath:(out NSIndexPath **)childIndexPath
+{
+    NSInteger childSection = 0;
+    id<SPLTableViewBehavior> behavior = [self _behaviorInSection:indexPath.section childSection:&childSection];
+
+    if (childIndexPath) {
+        *childIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:childSection];
+    }
+
+    return behavior;
 }
 
 @end
