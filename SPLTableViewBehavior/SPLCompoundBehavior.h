@@ -35,6 +35,8 @@
 @property (nonatomic, weak) id<SPLTableViewUpdate> update;
 
 @property (nonatomic, copy, readonly) NSArray *behaviors;
+@property (nonatomic, copy) NSArray *visibleBehaviors;
+- (void)setVisibleBehaviors:(NSArray *)visibleBehaviors withRowAnimation:(UITableViewRowAnimation)animation;
 
 - (instancetype)init UNAVAILABLE_ATTRIBUTE;
 - (instancetype)initWithBehaviors:(NSArray *)behaviors NS_DESIGNATED_INITIALIZER;

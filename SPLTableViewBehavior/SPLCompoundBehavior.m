@@ -35,12 +35,40 @@
 
 @implementation SPLCompoundBehavior
 
+#pragma mark - setters and getters
+
+- (void)setVisibleBehaviors:(NSArray *)visibleBehaviors
+{
+    [self setVisibleBehaviors:visibleBehaviors withRowAnimation:UITableViewRowAnimationNone];
+}
+
+- (void)setVisibleBehaviors:(NSArray *)visibleBehaviors withRowAnimation:(UITableViewRowAnimation)animation
+{
+    if (visibleBehaviors != _visibleBehaviors) {
+        visibleBehaviors = [visibleBehaviors sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+            NSParameterAssert([self.behaviors containsObject:obj1]);
+            NSParameterAssert([self.behaviors containsObject:obj2]);
+
+            NSNumber *index1 = @([self.behaviors indexOfObject:obj1]);
+            NSNumber *index2 = @([self.behaviors indexOfObject:obj2]);
+
+            return [index1 compare:index2];
+        }];
+
+        NSArray *previousVisibleBehaviors = _visibleBehaviors;
+        _visibleBehaviors = visibleBehaviors;
+
+        [self _animateFromVisibleBehaviors:previousVisibleBehaviors to:visibleBehaviors withAnimation:animation];
+    }
+}
+
 #pragma mark - Initialization
 
 - (instancetype)initWithBehaviors:(NSArray *)behaviors
 {
     if (self = [super init]) {
         _behaviors = behaviors.copy;
+        _visibleBehaviors = behaviors.copy;
 
         for (id<SPLTableViewBehavior> behavior in _behaviors) {
             behavior.update = self;
@@ -147,8 +175,8 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     NSInteger count = 0;
-    for (id<SPLTableViewBehavior> behavior in self.behaviors) {
-        count += [self _sectionInBehavior:behavior];
+    for (id<SPLTableViewBehavior> behavior in self.visibleBehaviors) {
+        count += [self _numberOfSectionsInBehavior:behavior];
     }
 
     return count;
@@ -172,16 +200,28 @@
 
 - (void)tableViewBehaviorBeginUpdates:(id<SPLTableViewBehavior>)tableViewBehavior
 {
+    if (![self.visibleBehaviors containsObject:tableViewBehavior]) {
+        return;
+    }
+
     [self.update tableViewBehaviorBeginUpdates:self];
 }
 
 - (void)tableViewBehaviorEndUpdates:(id<SPLTableViewBehavior>)tableViewBehavior
 {
+    if (![self.visibleBehaviors containsObject:tableViewBehavior]) {
+        return;
+    }
+
     [self.update tableViewBehaviorEndUpdates:self];
 }
 
 - (void)insertRowsAtIndexPaths:(NSArray *)indexPaths withRowAnimation:(UITableViewRowAnimation)animation fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
 {
+    if (![self.visibleBehaviors containsObject:tableViewBehavior]) {
+        return;
+    }
+
     NSMutableArray *newIndexPaths = [NSMutableArray array];
     for (NSIndexPath *indexPath in indexPaths) {
         [newIndexPaths addObject:[self _convertIndexPath:indexPath fromTableViewBehavior:tableViewBehavior]];
@@ -192,6 +232,10 @@
 
 - (void)deleteRowsAtIndexPaths:(NSArray *)indexPaths withRowAnimation:(UITableViewRowAnimation)animation fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
 {
+    if (![self.visibleBehaviors containsObject:tableViewBehavior]) {
+        return;
+    }
+
     NSMutableArray *newIndexPaths = [NSMutableArray array];
     for (NSIndexPath *indexPath in indexPaths) {
         [newIndexPaths addObject:[self _convertIndexPath:indexPath fromTableViewBehavior:tableViewBehavior]];
@@ -202,6 +246,10 @@
 
 - (void)reloadRowsAtIndexPaths:(NSArray *)indexPaths withRowAnimation:(UITableViewRowAnimation)animation fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
 {
+    if (![self.visibleBehaviors containsObject:tableViewBehavior]) {
+        return;
+    }
+
     NSMutableArray *newIndexPaths = [NSMutableArray array];
     for (NSIndexPath *indexPath in indexPaths) {
         [newIndexPaths addObject:[self _convertIndexPath:indexPath fromTableViewBehavior:tableViewBehavior]];
@@ -212,14 +260,101 @@
 
 - (void)moveRowAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
 {
+    if (![self.visibleBehaviors containsObject:tableViewBehavior]) {
+        return;
+    }
+
     [self.update moveRowAtIndexPath:[self _convertIndexPath:indexPath fromTableViewBehavior:tableViewBehavior]
                         toIndexPath:[self _convertIndexPath:newIndexPath fromTableViewBehavior:tableViewBehavior]
               fromTableViewBehavior:self];
 }
 
+- (void)insertSections:(NSIndexSet *)sections withRowAnimation:(UITableViewRowAnimation)animation fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
+{
+    NSMutableIndexSet *newSections = [NSMutableIndexSet indexSet];
+    [sections enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+        [newSections addIndex:[self _convertSection:idx fromTableViewBehavior:tableViewBehavior]];
+    }];
+
+    [self.update insertSections:newSections withRowAnimation:animation fromTableViewBehavior:self];
+}
+
+- (void)deleteSections:(NSIndexSet *)sections withRowAnimation:(UITableViewRowAnimation)animation fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
+{
+    NSMutableIndexSet *newSections = [NSMutableIndexSet indexSet];
+    [sections enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+        [newSections addIndex:[self _convertSection:idx fromTableViewBehavior:tableViewBehavior]];
+    }];
+
+    [self.update deleteSections:newSections withRowAnimation:animation fromTableViewBehavior:self];
+}
+
+- (void)reloadSections:(NSIndexSet *)sections withRowAnimation:(UITableViewRowAnimation)animation fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
+{
+    NSMutableIndexSet *newSections = [NSMutableIndexSet indexSet];
+    [sections enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+        [newSections addIndex:[self _convertSection:idx fromTableViewBehavior:tableViewBehavior]];
+    }];
+
+    [self.update reloadSections:newSections withRowAnimation:animation fromTableViewBehavior:self];
+}
+
 #pragma mark - Private category implementation ()
 
-- (NSInteger)_sectionInBehavior:(id<SPLTableViewBehavior>)behavior
+- (void)_animateFromVisibleBehaviors:(NSArray *)previousBehaviors to:(NSArray *)visibleBehaviors withAnimation:(UITableViewRowAnimation)animation
+{
+    [self.update tableViewBehaviorBeginUpdates:self];
+
+    __block NSInteger previousIndex = 0;
+    __block NSInteger currentOffset = 0;
+
+    [visibleBehaviors enumerateObjectsUsingBlock:^(id<SPLTableViewBehavior> behavior, NSUInteger idx, BOOL *stop) {
+        if (![previousBehaviors containsObject:behavior]) {
+            NSInteger count = [self _numberOfSectionsInBehavior:behavior];
+
+            for (NSInteger i = 0; i < count; i++) {
+                NSIndexSet *section = [NSIndexSet indexSetWithIndex:currentOffset + i];
+                [self.update insertSections:section withRowAnimation:animation fromTableViewBehavior:self];
+            }
+
+            currentOffset += count;
+        } else {
+            while (![behavior isEqual:previousBehaviors[previousIndex]] && previousIndex < previousBehaviors.count) {
+                id<SPLTableViewBehavior> deletedBehavior = previousBehaviors[previousIndex];
+                NSInteger count = [self _numberOfSectionsInBehavior:deletedBehavior];
+
+                for (NSInteger i = 0; i < count; i++) {
+                    NSIndexSet *section = [NSIndexSet indexSetWithIndex:currentOffset + i];
+                    [self.update deleteSections:section withRowAnimation:animation fromTableViewBehavior:self];
+                }
+
+                currentOffset += count;
+                previousIndex++;
+            }
+
+            previousIndex++;
+            currentOffset += [self _numberOfSectionsInBehavior:behavior];
+        }
+    }];
+
+    if (previousIndex < previousBehaviors.count) {
+        NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(previousIndex, previousBehaviors.count - previousIndex)];
+        [previousBehaviors enumerateObjectsAtIndexes:indexSet options:kNilOptions usingBlock:^(id<SPLTableViewBehavior> deletedBehavior, NSUInteger idx, BOOL *stop) {
+            NSInteger count = [self _numberOfSectionsInBehavior:deletedBehavior];
+
+            for (NSInteger i = 0; i < count; i++) {
+                NSIndexSet *section = [NSIndexSet indexSetWithIndex:currentOffset + i];
+                [self.update deleteSections:section withRowAnimation:animation fromTableViewBehavior:self];
+            }
+
+            currentOffset += count;
+        }];
+    }
+
+    [self.update tableViewBehaviorEndUpdates:self];
+}
+
+- (NSInteger)_numberOfSectionsInBehavior:(id<SPLTableViewBehavior>)behavior
 {
     if ([behavior respondsToSelector:@selector(numberOfSectionsInTableView:)]) {
         return [behavior numberOfSectionsInTableView:nil];
@@ -230,11 +365,11 @@
 
 - (NSInteger)_convertSection:(NSInteger)section fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
 {
-    NSInteger index = [self.behaviors indexOfObject:tableViewBehavior];
+    NSInteger index = [self.visibleBehaviors indexOfObject:tableViewBehavior];
 
     NSInteger count = 0;
-    for (id<SPLTableViewBehavior> behavior in [self.behaviors subarrayWithRange:NSMakeRange(0, index)]) {
-        count += [self _sectionInBehavior:behavior];
+    for (id<SPLTableViewBehavior> behavior in [self.visibleBehaviors subarrayWithRange:NSMakeRange(0, index)]) {
+        count += [self _numberOfSectionsInBehavior:behavior];
     }
 
     return section + count;
@@ -295,18 +430,18 @@
 - (id<SPLTableViewBehavior>)_behaviorInSection:(NSInteger)section childSection:(out NSInteger *)childSection
 {
     NSInteger currentIndex = 0;
-    NSRange currentRange = NSMakeRange(0, [self _sectionInBehavior:self.behaviors[currentIndex]]);
+    NSRange currentRange = NSMakeRange(0, [self _numberOfSectionsInBehavior:self.visibleBehaviors[currentIndex]]);
 
     while (!NSLocationInRange(section, currentRange)) {
         currentIndex++;
-        currentRange = NSMakeRange(currentRange.location + currentRange.length, [self _sectionInBehavior:self.behaviors[currentIndex]]);
+        currentRange = NSMakeRange(currentRange.location + currentRange.length, [self _numberOfSectionsInBehavior:self.visibleBehaviors[currentIndex]]);
     }
 
     if (childSection) {
         *childSection = section - currentRange.location;
     }
 
-    return self.behaviors[currentIndex];
+    return self.visibleBehaviors[currentIndex];
 }
 
 - (id<SPLTableViewBehavior>)_behaviorForIndexPath:(NSIndexPath *)indexPath childIndexPath:(out NSIndexPath **)childIndexPath

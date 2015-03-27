@@ -261,6 +261,21 @@
               fromTableViewBehavior:self];
 }
 
+- (void)insertSections:(NSIndexSet *)sections withRowAnimation:(UITableViewRowAnimation)animation fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
+{
+    [self doesNotRecognizeSelector:_cmd];
+}
+
+- (void)deleteSections:(NSIndexSet *)sections withRowAnimation:(UITableViewRowAnimation)animation fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
+{
+    [self doesNotRecognizeSelector:_cmd];
+}
+
+- (void)reloadSections:(NSIndexSet *)sections withRowAnimation:(UITableViewRowAnimation)animation fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
+{
+    [self doesNotRecognizeSelector:_cmd];
+}
+
 #pragma mark - Private category implementation ()
 
 - (NSIndexPath *)_convertIndexPath:(NSIndexPath *)indexPath fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
