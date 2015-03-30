@@ -118,16 +118,16 @@
     [update tableViewBehaviorBeginUpdates:self.behavior];
 
     {
-        NSMutableArray *behaviors = self.toggleSection0.behaviors.mutableCopy;
-        if (self.toggleSection0.visibleBehaviors.count == self.toggleSection0.behaviors.count) {
+        NSMutableArray *behaviors = self.toggleSection0.childBehaviors.mutableCopy;
+        if (self.toggleSection0.visibleBehaviors.count == self.toggleSection0.childBehaviors.count) {
             [behaviors removeObjectsInArray:self.toggleBehaviors0];
         }
         [self.toggleSection0 setVisibleBehaviors:behaviors withRowAnimation:UITableViewRowAnimationTop];
     }
 
     {
-        NSMutableArray *behaviors = self.behavior.behaviors.mutableCopy;
-        if (self.behavior.visibleBehaviors.count == self.behavior.behaviors.count) {
+        NSMutableArray *behaviors = self.behavior.childBehaviors.mutableCopy;
+        if (self.behavior.visibleBehaviors.count == self.behavior.childBehaviors.count) {
             [behaviors removeObjectsInArray:self.toggleBehaviors];
         }
         [self.behavior setVisibleBehaviors:behaviors withRowAnimation:UITableViewRowAnimationTop];

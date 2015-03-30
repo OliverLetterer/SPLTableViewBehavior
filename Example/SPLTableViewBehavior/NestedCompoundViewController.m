@@ -93,7 +93,7 @@
 
 - (void)_toggle
 {
-    NSMutableArray *behaviors = self.behavior.behaviors.mutableCopy;
+    NSMutableArray *behaviors = self.behavior.childBehaviors.mutableCopy;
 
     if (self.behavior.visibleBehaviors.count == 3) {
         [behaviors removeObjectsInArray:self.toggleBehaviors];

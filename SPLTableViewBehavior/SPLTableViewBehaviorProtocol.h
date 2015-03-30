@@ -31,4 +31,7 @@
 
 @property (nonatomic, weak) id<SPLTableViewUpdate> update;
 
+@optional
+@property (nonatomic, copy, readonly) NSArray *childBehaviors;
+
 @end

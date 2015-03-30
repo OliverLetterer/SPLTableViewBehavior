@@ -53,7 +53,7 @@
             cell.detailTextLabel.text = nil;
         } action:^(id cell) {
             __strong typeof(self) self = weakSelf;
-            NSMutableArray *behaviors = self.behavior.behaviors.mutableCopy;
+            NSMutableArray *behaviors = self.behavior.childBehaviors.mutableCopy;
 
             if (self.behavior.visibleBehaviors.count == 4) {
                 [behaviors removeObjectsInArray:self.toggleBehaviors];

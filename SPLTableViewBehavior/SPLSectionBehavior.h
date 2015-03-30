@@ -36,7 +36,7 @@
 @property (nonatomic, weak) id<SPLTableViewUpdate> update;
 
 @property (nonatomic, copy, readonly) NSString *title;
-@property (nonatomic, copy, readonly) NSArray *behaviors;
+@property (nonatomic, copy, readonly) NSArray *childBehaviors;
 
 @property (nonatomic, copy) NSArray *visibleBehaviors;
 - (void)setVisibleBehaviors:(NSArray *)visibleBehaviors withRowAnimation:(UITableViewRowAnimation)animation;

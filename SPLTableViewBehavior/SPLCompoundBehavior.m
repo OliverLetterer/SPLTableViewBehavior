@@ -46,11 +46,11 @@
 {
     if (visibleBehaviors != _visibleBehaviors) {
         visibleBehaviors = [visibleBehaviors sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-            NSParameterAssert([self.behaviors containsObject:obj1]);
-            NSParameterAssert([self.behaviors containsObject:obj2]);
+            NSParameterAssert([self.childBehaviors containsObject:obj1]);
+            NSParameterAssert([self.childBehaviors containsObject:obj2]);
 
-            NSNumber *index1 = @([self.behaviors indexOfObject:obj1]);
-            NSNumber *index2 = @([self.behaviors indexOfObject:obj2]);
+            NSNumber *index1 = @([self.childBehaviors indexOfObject:obj1]);
+            NSNumber *index2 = @([self.childBehaviors indexOfObject:obj2]);
 
             return [index1 compare:index2];
         }];
@@ -67,10 +67,10 @@
 - (instancetype)initWithBehaviors:(NSArray *)behaviors
 {
     if (self = [super init]) {
-        _behaviors = behaviors.copy;
+        _childBehaviors = behaviors.copy;
         _visibleBehaviors = behaviors.copy;
 
-        for (id<SPLTableViewBehavior> behavior in _behaviors) {
+        for (id<SPLTableViewBehavior> behavior in _childBehaviors) {
             behavior.update = self;
         }
     }
@@ -397,7 +397,7 @@
         return NO;
     }
 
-    for (id<SPLTableViewBehavior> behavior in self.behaviors) {
+    for (id<SPLTableViewBehavior> behavior in self.childBehaviors) {
         if ([behavior respondsToSelector:selector]) {
             return YES;
         }
