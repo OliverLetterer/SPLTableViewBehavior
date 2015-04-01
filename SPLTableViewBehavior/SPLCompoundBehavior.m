@@ -284,51 +284,33 @@
 {
     [self.update tableViewBehaviorBeginUpdates:self];
 
-    __block NSInteger previousIndex = 0;
-    __block NSInteger currentOffset = 0;
+    __block NSInteger deletionOffset = 0;
+    [previousBehaviors enumerateObjectsUsingBlock:^(id<SPLTableViewBehavior> behavior, NSUInteger idx, BOOL *stop) {
+        NSInteger count = [self _numberOfSectionsInBehavior:behavior];
 
-    [visibleBehaviors enumerateObjectsUsingBlock:^(id<SPLTableViewBehavior> behavior, NSUInteger idx, BOOL *stop) {
-        if (![previousBehaviors containsObject:behavior]) {
-            NSInteger count = [self _numberOfSectionsInBehavior:behavior];
-
+        if (![visibleBehaviors containsObject:behavior]) {
             for (NSInteger i = 0; i < count; i++) {
-                NSIndexSet *section = [NSIndexSet indexSetWithIndex:currentOffset + i];
-                [self.update insertSections:section withRowAnimation:animation fromTableViewBehavior:self];
-            }
-
-            currentOffset += count;
-        } else {
-            while (![behavior isEqual:previousBehaviors[previousIndex]] && previousIndex < previousBehaviors.count) {
-                id<SPLTableViewBehavior> deletedBehavior = previousBehaviors[previousIndex];
-                NSInteger count = [self _numberOfSectionsInBehavior:deletedBehavior];
-
-                for (NSInteger i = 0; i < count; i++) {
-                    NSIndexSet *section = [NSIndexSet indexSetWithIndex:currentOffset + i];
-                    [self.update deleteSections:section withRowAnimation:animation fromTableViewBehavior:self];
-                }
-
-                currentOffset += count;
-                previousIndex++;
-            }
-
-            previousIndex++;
-            currentOffset += [self _numberOfSectionsInBehavior:behavior];
-        }
-    }];
-
-    if (previousIndex < previousBehaviors.count) {
-        NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(previousIndex, previousBehaviors.count - previousIndex)];
-        [previousBehaviors enumerateObjectsAtIndexes:indexSet options:kNilOptions usingBlock:^(id<SPLTableViewBehavior> deletedBehavior, NSUInteger idx, BOOL *stop) {
-            NSInteger count = [self _numberOfSectionsInBehavior:deletedBehavior];
-
-            for (NSInteger i = 0; i < count; i++) {
-                NSIndexSet *section = [NSIndexSet indexSetWithIndex:currentOffset + i];
+                NSIndexSet *section = [NSIndexSet indexSetWithIndex:deletionOffset + i];
                 [self.update deleteSections:section withRowAnimation:animation fromTableViewBehavior:self];
             }
+        }
 
-            currentOffset += count;
-        }];
-    }
+        deletionOffset += count;
+    }];
+
+    __block NSInteger insertionOffset = 0;
+    [visibleBehaviors enumerateObjectsUsingBlock:^(id<SPLTableViewBehavior> behavior, NSUInteger idx, BOOL *stop) {
+        NSInteger count = [self _numberOfSectionsInBehavior:behavior];
+
+        if (![previousBehaviors containsObject:behavior]) {
+            for (NSInteger i = 0; i < count; i++) {
+                NSIndexSet *section = [NSIndexSet indexSetWithIndex:insertionOffset + i];
+                [self.update insertSections:section withRowAnimation:animation fromTableViewBehavior:self];
+            }
+        }
+
+        insertionOffset += count;
+    }];
 
     [self.update tableViewBehaviorEndUpdates:self];
 }
