@@ -281,7 +281,7 @@
         count += [behavior tableView:nil numberOfRowsInSection:0];
     }
 
-    return [NSIndexPath indexPathForRow:count + indexPath.row inSection:index];
+    return [NSIndexPath indexPathForRow:count + indexPath.row inSection:indexPath.section];
 }
 
 - (BOOL)_canForwardSelector:(SEL)selector inProtocol:(Protocol *)protocol
