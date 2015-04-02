@@ -109,6 +109,11 @@
     }
 }
 
+- (NSIndexPath *)convertIndexPath:(NSIndexPath *)indexPath fromChildBehavior:(id<SPLTableViewBehavior>)childBehavior
+{
+    return indexPath;
+}
+
 - (void)_applyUpdateFromState:(_SPLTableViewUpdateState *)state
 {
     NSInteger totalChanges = state.deletedSections.count + state.insertedSections.count + state.deletedIndexPaths.count + state.insertedIndexPaths.count + state.updatedIndexPaths.count;

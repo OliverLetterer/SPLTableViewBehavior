@@ -260,6 +260,16 @@
     [self doesNotRecognizeSelector:_cmd];
 }
 
+- (NSIndexPath *)convertIndexPath:(NSIndexPath *)indexPath fromChildBehavior:(id<SPLTableViewBehavior>)childBehavior
+{
+    if (![self.visibleBehaviors containsObject:childBehavior]) {
+        return nil;
+    }
+
+    NSIndexPath *convertedIndexPath = [self _convertIndexPath:indexPath fromTableViewBehavior:childBehavior];
+    return [self.update convertIndexPath:convertedIndexPath fromChildBehavior:self];
+}
+
 #pragma mark - Private category implementation ()
 
 - (NSIndexPath *)_convertIndexPath:(NSIndexPath *)indexPath fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior

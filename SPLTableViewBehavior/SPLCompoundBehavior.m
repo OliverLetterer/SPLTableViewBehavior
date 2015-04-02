@@ -278,6 +278,16 @@
     [self.update deleteSections:newSections withRowAnimation:animation fromTableViewBehavior:self];
 }
 
+- (NSIndexPath *)convertIndexPath:(NSIndexPath *)indexPath fromChildBehavior:(id<SPLTableViewBehavior>)childBehavior
+{
+    if (![self.visibleBehaviors containsObject:childBehavior]) {
+        return nil;
+    }
+
+    NSIndexPath *convertedIndexPath = [self _convertIndexPath:indexPath fromTableViewBehavior:childBehavior];
+    return [self.update convertIndexPath:convertedIndexPath fromChildBehavior:self];
+}
+
 #pragma mark - Private category implementation ()
 
 - (void)_animateFromVisibleBehaviors:(NSArray *)previousBehaviors to:(NSArray *)visibleBehaviors withAnimation:(UITableViewRowAnimation)animation

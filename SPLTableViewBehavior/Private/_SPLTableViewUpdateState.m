@@ -162,6 +162,11 @@
     }];
 }
 
+- (NSIndexPath *)convertIndexPath:(NSIndexPath *)indexPath fromChildBehavior:(id<SPLTableViewBehavior>)childBehavior
+{
+    return indexPath;
+}
+
 - (NSArray *)_removeIndexPathsWithSection:(NSInteger)section fromArray:(NSArray *)array
 {
     NSMutableArray *result = [NSMutableArray arrayWithArray:array];
