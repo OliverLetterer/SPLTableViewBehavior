@@ -278,6 +278,16 @@
     [self.update deleteSections:newSections withRowAnimation:animation fromTableViewBehavior:self];
 }
 
+- (void)reloadSections:(NSIndexSet *)sections withRowAnimation:(UITableViewRowAnimation)animation fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
+{
+    NSMutableIndexSet *newSections = [NSMutableIndexSet indexSet];
+    [sections enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+        [newSections addIndex:[self _convertSection:idx fromTableViewBehavior:tableViewBehavior]];
+    }];
+
+    [self.update reloadSections:newSections withRowAnimation:animation fromTableViewBehavior:self];
+}
+
 - (NSIndexPath *)convertIndexPath:(NSIndexPath *)indexPath fromChildBehavior:(id<SPLTableViewBehavior>)childBehavior
 {
     if (![self.visibleBehaviors containsObject:childBehavior]) {

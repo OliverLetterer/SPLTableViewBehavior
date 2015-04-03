@@ -109,6 +109,15 @@
     }
 }
 
+- (void)reloadSections:(NSIndexSet *)sections withRowAnimation:(UITableViewRowAnimation)animation fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
+{
+    if (self.updateLevel == 0) {
+        [self.tableView deleteSections:sections withRowAnimation:animation];
+    } else {
+        [self.state deleteSections:sections withRowAnimation:animation fromTableViewBehavior:tableViewBehavior];
+    }
+}
+
 - (NSIndexPath *)convertIndexPath:(NSIndexPath *)indexPath fromChildBehavior:(id<SPLTableViewBehavior>)childBehavior
 {
     return indexPath;

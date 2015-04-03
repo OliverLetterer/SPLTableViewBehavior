@@ -76,6 +76,7 @@
 
 @property (nonatomic, strong) NSArray *insertedSections;
 @property (nonatomic, strong) NSArray *deletedSections;
+@property (nonatomic, strong) NSArray *updatedSections;
 
 @property (nonatomic, strong) NSArray *insertedIndexPaths;
 @property (nonatomic, strong) NSArray *deletedIndexPaths;
@@ -92,6 +93,7 @@
     if (self = [super init]) {
         _insertedSections = @[];
         _deletedSections = @[];
+        _updatedSections = @[];
 
         _insertedIndexPaths = @[];
         _deletedIndexPaths = @[];
@@ -158,6 +160,16 @@
             self.insertedIndexPaths = [self _removeIndexPathsWithSection:section fromArray:self.insertedIndexPaths];
             self.deletedIndexPaths = [self _removeIndexPathsWithSection:section fromArray:self.deletedIndexPaths];
             self.updatedIndexPaths = [self _removeIndexPathsWithSection:section fromArray:self.updatedIndexPaths];
+        }
+    }];
+}
+
+- (void)reloadSections:(NSIndexSet *)sections withRowAnimation:(UITableViewRowAnimation)animation fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
+{
+    [sections enumerateIndexesUsingBlock:^(NSUInteger section, BOOL *stop) {
+        _SPLSectionUpdate *update = [[_SPLSectionUpdate alloc] initWithSection:section animation:animation];
+        if (![self.deletedSections containsObject:update]) {
+            self.updatedSections = [self.updatedSections arrayByAddingObject:update];
         }
     }];
 }

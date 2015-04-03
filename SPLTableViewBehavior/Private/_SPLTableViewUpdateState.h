@@ -40,6 +40,7 @@
 
 @property (nonatomic, readonly) NSArray *insertedSections;
 @property (nonatomic, readonly) NSArray *deletedSections;
+@property (nonatomic, readonly) NSArray *updatedSections;
 
 @property (nonatomic, readonly) NSArray *insertedIndexPaths;
 @property (nonatomic, readonly) NSArray *deletedIndexPaths;

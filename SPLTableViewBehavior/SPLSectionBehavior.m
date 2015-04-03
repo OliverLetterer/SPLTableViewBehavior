@@ -260,6 +260,11 @@
     [self doesNotRecognizeSelector:_cmd];
 }
 
+- (void)reloadSections:(NSIndexSet *)sections withRowAnimation:(UITableViewRowAnimation)animation fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
+{
+    [self.update reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:animation fromTableViewBehavior:self];
+}
+
 - (NSIndexPath *)convertIndexPath:(NSIndexPath *)indexPath fromChildBehavior:(id<SPLTableViewBehavior>)childBehavior
 {
     if (![self.visibleBehaviors containsObject:childBehavior]) {
