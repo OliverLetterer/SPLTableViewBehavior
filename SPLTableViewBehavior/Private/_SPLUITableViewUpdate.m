@@ -112,9 +112,9 @@
 - (void)reloadSections:(NSIndexSet *)sections withRowAnimation:(UITableViewRowAnimation)animation fromTableViewBehavior:(id<SPLTableViewBehavior>)tableViewBehavior
 {
     if (self.updateLevel == 0) {
-        [self.tableView deleteSections:sections withRowAnimation:animation];
+        [self.tableView reloadSections:sections withRowAnimation:animation];
     } else {
-        [self.state deleteSections:sections withRowAnimation:animation fromTableViewBehavior:tableViewBehavior];
+        [self.state reloadSections:sections withRowAnimation:animation fromTableViewBehavior:tableViewBehavior];
     }
 }
 
