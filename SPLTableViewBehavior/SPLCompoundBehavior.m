@@ -196,6 +196,13 @@
     return [behavior tableView:tableView cellForRowAtIndexPath:childIndexPath];
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSIndexPath *childIndexPath = nil;
+    id<SPLTableViewBehavior> behavior = [self _behaviorForIndexPath:indexPath childIndexPath:&childIndexPath];
+    return [behavior respondsToSelector:@selector(tableView:heightForRowAtIndexPath:)] ? [behavior tableView:tableView heightForRowAtIndexPath:childIndexPath] : tableView.rowHeight;
+}
+
 #pragma mark - SPLTableViewUpdate
 
 - (void)tableViewBehaviorBeginUpdates:(id<SPLTableViewBehavior>)tableViewBehavior

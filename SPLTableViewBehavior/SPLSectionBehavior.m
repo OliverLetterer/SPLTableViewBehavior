@@ -183,6 +183,13 @@
     return [behavior tableView:tableView cellForRowAtIndexPath:childIndexPath];
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSIndexPath *childIndexPath = nil;
+    id<SPLTableViewBehavior> behavior = [self _behaviorForTableView:tableView atIndexPath:indexPath childIndexPath:&childIndexPath];
+    return [behavior respondsToSelector:@selector(tableView:heightForRowAtIndexPath:)] ? [behavior tableView:tableView heightForRowAtIndexPath:childIndexPath] : tableView.rowHeight;
+}
+
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     return self.title;
