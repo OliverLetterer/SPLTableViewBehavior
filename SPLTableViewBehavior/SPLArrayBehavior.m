@@ -48,6 +48,19 @@
     return [self mutableArrayValueForKey:NSStringFromSelector(@selector(data))];
 }
 
+- (void)setData:(NSArray *)data withAnimation:(UITableViewRowAnimation)animation
+{
+    if (data != _data) {
+        _data = data;
+        [self.update reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:animation fromTableViewBehavior:self];
+    }
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+}
+
 #pragma mark - Initialization
 
 - (instancetype)initWithPrototype:(UITableViewCell *)prototype data:(NSArray *)data configuration:(void(^)(id cell, id object))configuration

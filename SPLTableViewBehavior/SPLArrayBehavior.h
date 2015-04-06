@@ -22,7 +22,6 @@
  */
 
 #import <UIKit/UIKit.h>
-
 #import <SPLTableViewBehavior/SPLTableViewBehaviorProtocol.h>
 
 
@@ -35,6 +34,8 @@
 @property (nonatomic, weak) id<SPLTableViewUpdate> update;
 
 @property (nonatomic, copy, readonly) NSArray *data;
+- (void)setData:(NSArray *)data withAnimation:(UITableViewRowAnimation)animation;
+
 @property (nonatomic, copy) void(^deletionHandler)(id object);
 
 - (instancetype)init UNAVAILABLE_ATTRIBUTE;
