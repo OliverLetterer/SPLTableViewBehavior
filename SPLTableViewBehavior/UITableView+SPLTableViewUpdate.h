@@ -22,13 +22,16 @@
  */
 
 #import <UIKit/UIKit.h>
-
 #import <SPLTableViewBehavior/SPLTableViewUpdate.h>
 
 
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface UITableView (SPLTableViewUpdate)
 
 @property (nonatomic, readonly) id<SPLTableViewUpdate> tableViewUpdate;
 
 @end
+
+NS_ASSUME_NONNULL_END

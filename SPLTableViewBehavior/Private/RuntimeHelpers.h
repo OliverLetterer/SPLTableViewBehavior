@@ -23,6 +23,8 @@
 
 #import <objc/runtime.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 static inline BOOL objc_protocolContainsInstanceMethod(Protocol *protocol, SEL selector)
 {
     if (protocol_getMethodDescription(protocol, selector, YES, YES).name != NULL) {
@@ -50,3 +52,5 @@ static inline struct objc_method_description objc_protocolGetInstanceMethod(Prot
 
     return result;
 }
+
+NS_ASSUME_NONNULL_END

@@ -26,9 +26,8 @@
 
 
 
-/**
- @abstract  <#abstract comment#>
- */
+NS_ASSUME_NONNULL_BEGIN
+
 @interface SPLArrayBehavior : NSObject <SPLTableViewBehavior>
 
 @property (nonatomic, weak) id<SPLTableViewUpdate> update;
@@ -36,10 +35,12 @@
 @property (nonatomic, copy, readonly) NSArray *data;
 - (void)setData:(NSArray *)data withAnimation:(UITableViewRowAnimation)animation;
 
-@property (nonatomic, copy) void(^deletionHandler)(id object);
+@property (nonatomic, nullable, copy) void(^deletionHandler)(id object);
 
-- (instancetype)init UNAVAILABLE_ATTRIBUTE;
+- (instancetype)init NS_UNAVAILABLE;
 - (instancetype)initWithPrototype:(UITableViewCell *)prototype data:(NSArray *)data configuration:(void(^)(id cell, id object))configuration;
-- (instancetype)initWithPrototype:(UITableViewCell *)prototype data:(NSArray *)data configuration:(void(^)(id cell, id object))configuration action:(void(^)(id object))action NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithPrototype:(UITableViewCell *)prototype data:(NSArray *)data configuration:(void(^)(id cell, id object))configuration action:(void(^ __nullable)(id object))action NS_DESIGNATED_INITIALIZER;
 
 @end
+
+NS_ASSUME_NONNULL_END

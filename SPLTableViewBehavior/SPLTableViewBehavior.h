@@ -34,15 +34,16 @@
 
 
 
-/**
- @abstract  <#abstract comment#>
- */
+NS_ASSUME_NONNULL_BEGIN
+
 @interface SPLTableViewBehavior : NSObject <SPLTableViewBehavior>
 
 @property (nonatomic, weak) id<SPLTableViewUpdate> update;
 
 - (instancetype)init UNAVAILABLE_ATTRIBUTE;
 - (instancetype)initWithPrototype:(UITableViewCell *)prototype configuration:(void(^)(id cell))configuration;
-- (instancetype)initWithPrototype:(UITableViewCell *)prototype configuration:(void(^)(id cell))configuration action:(void(^)(id cell))action NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithPrototype:(UITableViewCell *)prototype configuration:(void(^)(id cell))configuration action:(void(^ __nullable)(id cell))action NS_DESIGNATED_INITIALIZER;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -28,9 +28,8 @@
 
 
 
-/**
- @abstract  <#abstract comment#>
- */
+NS_ASSUME_NONNULL_BEGIN
+
 @interface SPLFetchedResultsBehavior : NSObject <SPLTableViewBehavior, NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, weak) id<SPLTableViewUpdate> update;
@@ -40,6 +39,8 @@
 
 - (instancetype)init UNAVAILABLE_ATTRIBUTE;
 - (instancetype)initWithPrototype:(UITableViewCell *)prototype controller:(NSFetchedResultsController *)controller configuration:(void(^)(id cell, id object))configuration;
-- (instancetype)initWithPrototype:(UITableViewCell *)prototype controller:(NSFetchedResultsController *)controller configuration:(void(^)(id cell, id object))configuration action:(void(^)(id object))action NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithPrototype:(UITableViewCell *)prototype controller:(NSFetchedResultsController *)controller configuration:(void(^)(id cell, id object))configuration action:(void(^ __nullable)(id object))action NS_DESIGNATED_INITIALIZER;
 
 @end
+
+NS_ASSUME_NONNULL_END

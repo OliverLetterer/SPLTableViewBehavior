@@ -28,14 +28,13 @@
 
 
 
-/**
- @abstract  <#abstract comment#>
- */
+NS_ASSUME_NONNULL_BEGIN
+
 @interface SPLSectionBehavior : NSObject <SPLTableViewBehavior>
 
 @property (nonatomic, weak) id<SPLTableViewUpdate> update;
 
-@property (nonatomic, copy, readonly) NSString *title;
+@property (nonatomic, nullable, copy, readonly) NSString *title;
 @property (nonatomic, copy, readonly) NSArray *childBehaviors;
 
 @property (nonatomic, copy) NSArray *visibleBehaviors;
@@ -43,6 +42,8 @@
 
 - (instancetype)init UNAVAILABLE_ATTRIBUTE;
 - (instancetype)initWithBehaviors:(NSArray *)behaviors;
-- (instancetype)initWithTitle:(NSString *)title behaviors:(NSArray *)behaviors NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithTitle:(NSString * __nullable)title behaviors:(NSArray *)behaviors NS_DESIGNATED_INITIALIZER;
 
 @end
+
+NS_ASSUME_NONNULL_END

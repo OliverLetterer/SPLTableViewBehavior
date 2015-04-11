@@ -22,14 +22,12 @@
  */
 
 #import <UIKit/UIKit.h>
-
 #import <SPLTableViewBehavior/SPLTableViewBehaviorProtocol.h>
 
 
 
-/**
- @abstract  <#abstract comment#>
- */
+NS_ASSUME_NONNULL_BEGIN
+
 @interface SPLCompoundBehavior : NSObject <SPLTableViewBehavior>
 
 @property (nonatomic, weak) id<SPLTableViewUpdate> update;
@@ -42,3 +40,5 @@
 - (instancetype)initWithBehaviors:(NSArray *)behaviors NS_DESIGNATED_INITIALIZER;
 
 @end
+
+NS_ASSUME_NONNULL_END

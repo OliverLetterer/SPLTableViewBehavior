@@ -23,7 +23,11 @@
 
 #import <UIKit/UIKit.h>
 
-typedef UITableViewCell *(^UITableViewCellPrototypeDeque)(UITableView *tableView);
+
+
+NS_ASSUME_NONNULL_BEGIN
+
+typedef UITableViewCell * __nonnull(^UITableViewCellPrototypeDeque)(UITableView *tableView);
 
 
 @interface UITableViewCell (SPLTableViewBehavior)
@@ -31,3 +35,5 @@ typedef UITableViewCell *(^UITableViewCellPrototypeDeque)(UITableView *tableView
 @property (nonatomic, readonly) UITableViewCellPrototypeDeque dequeBlock;
 
 @end
+
+NS_ASSUME_NONNULL_END

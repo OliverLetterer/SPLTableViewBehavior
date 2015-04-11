@@ -11,6 +11,8 @@
 
 #import <SPLTableViewBehavior/SPLTableViewUpdate.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface _SPLIndexPathUpdate : NSObject
 
 @property (nonatomic, readonly) NSIndexPath *indexPath;
@@ -33,9 +35,6 @@
 
 
 
-/**
- @abstract  <#abstract comment#>
- */
 @interface _SPLTableViewUpdateState : NSObject <SPLTableViewUpdate>
 
 @property (nonatomic, readonly) NSArray *insertedSections;
@@ -47,3 +46,5 @@
 @property (nonatomic, readonly) NSArray *updatedIndexPaths;
 
 @end
+
+NS_ASSUME_NONNULL_END

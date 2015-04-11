@@ -26,6 +26,8 @@
 
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface _SPLUITableViewUpdate : NSObject <SPLTableViewUpdate>
 
 @property (nonatomic, weak, readonly) UITableView *tableView;
@@ -34,3 +36,5 @@
 - (instancetype)initWithTableView:(UITableView *)tableView NS_DESIGNATED_INITIALIZER;
 
 @end
+
+NS_ASSUME_NONNULL_END

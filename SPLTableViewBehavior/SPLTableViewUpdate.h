@@ -27,6 +27,8 @@
 
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 @protocol SPLTableViewUpdate <NSObject>
 
 - (void)tableViewBehaviorBeginUpdates:(id<SPLTableViewBehavior>)tableViewBehavior;
@@ -43,3 +45,5 @@
 - (NSIndexPath *)convertIndexPath:(NSIndexPath *)indexPath fromChildBehavior:(id<SPLTableViewBehavior>)childBehavior;
 
 @end
+
+NS_ASSUME_NONNULL_END
