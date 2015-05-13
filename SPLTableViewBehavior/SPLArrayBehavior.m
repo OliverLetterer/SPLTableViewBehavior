@@ -121,10 +121,15 @@
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         id object = self.data[indexPath.row];
-        self.deletionHandler(object);
         [self.mutableData removeObjectAtIndex:indexPath.row];
 
+        [CATransaction begin];
+        [CATransaction setCompletionBlock:^{
+            self.deletionHandler(object);
+        }];
+
         [self.update deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationLeft fromTableViewBehavior:self];
+        [CATransaction commit];
     }
 }
 
