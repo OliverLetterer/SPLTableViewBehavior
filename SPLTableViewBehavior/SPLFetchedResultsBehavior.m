@@ -38,6 +38,22 @@
 
 @implementation SPLFetchedResultsBehavior
 
+#pragma mark - setters and getters
+
+- (void)setController:(NSFetchedResultsController * __nonnull)controller
+{
+    if (controller != _controller) {
+        _controller.delegate = nil;
+
+        _controller = controller;
+
+        _controller.delegate = self;
+        [_controller performFetch:NULL];
+
+        [self.update reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone fromTableViewBehavior:self];
+    }
+}
+
 #pragma mark - Initialization
 
 - (instancetype)initWithPrototype:(UITableViewCell *)prototype controller:(NSFetchedResultsController *)controller configuration:(void(^)(id cell, id object))configuration
@@ -52,13 +68,11 @@
             [NSException raise:NSInternalInconsistencyException format:@"SPLFetchedResultsBehavior (%@) only supports NSFetchedResultsController with single sections: %@", self, controller];
         }
 
-        _controller = controller;
-        _controller.delegate = self;
-        [_controller performFetch:NULL];
-
         _deque = prototype.dequeBlock;
         _configuration = configuration;
         _action = action;
+
+        self.controller = controller;
     }
     return self;
 }

@@ -34,7 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, weak) id<SPLTableViewUpdate> update;
 
-@property (nonatomic, readonly) NSFetchedResultsController *controller;
+@property (nonatomic, strong) NSFetchedResultsController *controller;
 @property (nonatomic, copy) void(^deletionHandler)(id object);
 
 - (instancetype)init UNAVAILABLE_ATTRIBUTE;
