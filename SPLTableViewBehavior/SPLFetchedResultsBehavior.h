@@ -35,7 +35,15 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, weak) id<SPLTableViewUpdate> update;
 
 @property (nonatomic, strong) NSFetchedResultsController *controller;
-@property (nonatomic, copy) void(^deletionHandler)(id object);
+
+@property (nonatomic, copy, nullable) dispatch_block_t observer;
+@property (nonatomic, copy, nullable) CGFloat(^computesHeight)(id object);
+
+@property (nonatomic, nullable, readonly) void(^deletionHandler)(id object);
+@property (nonatomic, nullable, readonly) NSString *deleteConfirmationName;
+
+- (void)setDeletionHandler:(void (^ __nullable)(id __nonnull object))deletionHandler;
+- (void)setDeletionHandler:(void (^ __nullable)(id __nonnull object))deletionHandler withName:(nullable NSString *)deleteConfirmationName;
 
 - (instancetype)init UNAVAILABLE_ATTRIBUTE;
 - (instancetype)initWithPrototype:(UITableViewCell *)prototype controller:(NSFetchedResultsController *)controller configuration:(void(^)(id cell, id object))configuration;

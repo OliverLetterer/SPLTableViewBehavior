@@ -54,6 +54,17 @@
     }
 }
 
+- (void)setDeletionHandler:(void (^ __nullable)(id __nonnull object))deletionHandler
+{
+    return [self setDeletionHandler:deletionHandler withName:nil];
+}
+
+- (void)setDeletionHandler:(void (^ __nullable)(id __nonnull object))deletionHandler withName:(nullable NSString *)deleteConfirmationName
+{
+    _deletionHandler = deletionHandler;
+    _deleteConfirmationName = deleteConfirmationName;
+}
+
 #pragma mark - Initialization
 
 - (instancetype)initWithPrototype:(UITableViewCell *)prototype controller:(NSFetchedResultsController *)controller configuration:(void(^)(id cell, id object))configuration
@@ -87,6 +98,14 @@
 
     if (aSelector == @selector(tableView:canEditRowAtIndexPath:) || aSelector == @selector(tableView:commitEditingStyle:forRowAtIndexPath:)) {
         return self.deletionHandler != nil;
+    }
+
+    if (aSelector == @selector(tableView:titleForDeleteConfirmationButtonForRowAtIndexPath:)) {
+        return self.deletionHandler != nil && self.deleteConfirmationName.length > 0;
+    }
+
+    if (aSelector == @selector(tableView:heightForRowAtIndexPath:)) {
+        return self.computesHeight != nil;
     }
 
     return [super respondsToSelector:aSelector];
@@ -130,6 +149,17 @@
     self.action(object);
 }
 
+- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return self.deleteConfirmationName;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    id object = self.controller.fetchedObjects[indexPath.row];
+    return self.computesHeight(object);
+}
+
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
@@ -140,6 +170,10 @@
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
     [self.update tableViewBehaviorEndUpdates:self];
+
+    if (self.observer != nil) {
+        self.observer();
+    }
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath
