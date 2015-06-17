@@ -65,6 +65,11 @@
 
 #pragma mark - Initialization
 
+- (instancetype)init
+{
+    return [super init];
+}
+
 - (instancetype)initWithBehaviors:(NSArray *)behaviors
 {
     return [self initWithTitle:nil behaviors:behaviors];
@@ -290,7 +295,7 @@
 
     NSInteger count = 0;
     for (id<SPLTableViewBehavior> behavior in [self.visibleBehaviors subarrayWithRange:NSMakeRange(0, index)]) {
-        count += [behavior tableView:nil numberOfRowsInSection:0];
+        count += [behavior tableView:(UITableView *__nonnull)nil numberOfRowsInSection:0];
     }
 
     return [NSIndexPath indexPathForRow:count + indexPath.row inSection:indexPath.section];
@@ -343,7 +348,7 @@
 
     __block NSInteger deletionOffset = 0;
     [previousBehaviors enumerateObjectsUsingBlock:^(id<SPLTableViewBehavior> behavior, NSUInteger idx, BOOL *stop) {
-        NSInteger count = [behavior tableView:nil numberOfRowsInSection:0];
+        NSInteger count = [behavior tableView:(UITableView *__nonnull)nil numberOfRowsInSection:0];
 
         if (![visibleBehaviors containsObject:behavior]) {
             for (NSInteger i = 0; i < count; i++) {
@@ -357,7 +362,7 @@
 
     __block NSInteger insertionOffset = 0;
     [visibleBehaviors enumerateObjectsUsingBlock:^(id<SPLTableViewBehavior> behavior, NSUInteger idx, BOOL *stop) {
-        NSInteger count = [behavior tableView:nil numberOfRowsInSection:0];
+        NSInteger count = [behavior tableView:(UITableView *__nonnull)nil numberOfRowsInSection:0];
 
         if (![previousBehaviors containsObject:behavior]) {
             for (NSInteger i = 0; i < count; i++) {

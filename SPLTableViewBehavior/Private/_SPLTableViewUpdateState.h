@@ -18,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) NSIndexPath *indexPath;
 @property (nonatomic, readonly) UITableViewRowAnimation animation;
 
-- (instancetype)init UNAVAILABLE_ATTRIBUTE;
+- (instancetype)init NS_DESIGNATED_INITIALIZER UNAVAILABLE_ATTRIBUTE;
 - (instancetype)initWithIndexPath:(NSIndexPath *)indexPath animation:(UITableViewRowAnimation)animation NS_DESIGNATED_INITIALIZER;
 
 @end
@@ -28,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) NSInteger section;
 @property (nonatomic, readonly) UITableViewRowAnimation animation;
 
-- (instancetype)init UNAVAILABLE_ATTRIBUTE;
+- (instancetype)init NS_DESIGNATED_INITIALIZER UNAVAILABLE_ATTRIBUTE;
 - (instancetype)initWithSection:(NSInteger)section animation:(UITableViewRowAnimation)animation NS_DESIGNATED_INITIALIZER;
 
 @end

@@ -37,6 +37,11 @@
 
 @implementation _SPLUITableViewUpdate
 
+- (instancetype)init
+{
+    return [super init];
+}
+
 - (instancetype)initWithTableView:(UITableView *)tableView
 {
     if (self = [super init]) {

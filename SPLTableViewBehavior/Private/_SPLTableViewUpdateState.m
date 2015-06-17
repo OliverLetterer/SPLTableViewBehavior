@@ -10,6 +10,11 @@
 
 @implementation _SPLIndexPathUpdate
 
+- (instancetype)init
+{
+    return [super init];
+}
+
 - (instancetype)initWithIndexPath:(NSIndexPath *)indexPath animation:(UITableViewRowAnimation)animation
 {
     if (self = [super init]) {
@@ -40,6 +45,11 @@
 @end
 
 @implementation _SPLSectionUpdate
+
+- (instancetype)init
+{
+    return [super init];
+}
 
 - (instancetype)initWithSection:(NSInteger)section animation:(UITableViewRowAnimation)animation
 {

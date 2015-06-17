@@ -64,6 +64,11 @@
 
 #pragma mark - Initialization
 
+- (instancetype)init
+{
+    return [super init];
+}
+
 - (instancetype)initWithBehaviors:(NSArray *)behaviors
 {
     if (self = [super init]) {
@@ -345,7 +350,7 @@
 - (NSInteger)_numberOfSectionsInBehavior:(id<SPLTableViewBehavior>)behavior
 {
     if ([behavior respondsToSelector:@selector(numberOfSectionsInTableView:)]) {
-        return [behavior numberOfSectionsInTableView:nil];
+        return [behavior numberOfSectionsInTableView:(UITableView *__nonnull)nil];
     } else {
         return 1;
     }

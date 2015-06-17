@@ -63,6 +63,11 @@
 
 #pragma mark - Initialization
 
+- (instancetype)init
+{
+    return [super init];
+}
+
 - (instancetype)initWithPrototype:(UITableViewCell *)prototype data:(NSArray *)data configuration:(void(^)(id cell, id object))configuration
 {
     return [self initWithPrototype:prototype data:data configuration:configuration action:nil];

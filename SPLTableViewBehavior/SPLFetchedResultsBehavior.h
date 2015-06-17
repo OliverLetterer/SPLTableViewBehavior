@@ -45,7 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setDeletionHandler:(void (^ __nullable)(id __nonnull object))deletionHandler;
 - (void)setDeletionHandler:(void (^ __nullable)(id __nonnull object))deletionHandler withName:(nullable NSString *)deleteConfirmationName;
 
-- (instancetype)init UNAVAILABLE_ATTRIBUTE;
+- (instancetype)init NS_DESIGNATED_INITIALIZER UNAVAILABLE_ATTRIBUTE;
 - (instancetype)initWithPrototype:(UITableViewCell *)prototype controller:(NSFetchedResultsController *)controller configuration:(void(^)(id cell, id object))configuration;
 - (instancetype)initWithPrototype:(UITableViewCell *)prototype controller:(NSFetchedResultsController *)controller configuration:(void(^)(id cell, id object))configuration action:(void(^ __nullable)(id object))action NS_DESIGNATED_INITIALIZER;
 

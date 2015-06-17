@@ -37,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, nullable, copy) void(^deletionHandler)(id object);
 
-- (instancetype)init NS_UNAVAILABLE;
+- (instancetype)init NS_DESIGNATED_INITIALIZER UNAVAILABLE_ATTRIBUTE;
 - (instancetype)initWithPrototype:(UITableViewCell *)prototype data:(NSArray *)data configuration:(void(^)(id cell, id object))configuration;
 - (instancetype)initWithPrototype:(UITableViewCell *)prototype data:(NSArray *)data configuration:(void(^)(id cell, id object))configuration action:(void(^ __nullable)(id object))action NS_DESIGNATED_INITIALIZER;
 

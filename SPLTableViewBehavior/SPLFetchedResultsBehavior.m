@@ -67,6 +67,11 @@
 
 #pragma mark - Initialization
 
+- (instancetype)init
+{
+    return [super init];
+}
+
 - (instancetype)initWithPrototype:(UITableViewCell *)prototype controller:(NSFetchedResultsController *)controller configuration:(void(^)(id cell, id object))configuration
 {
     return [self initWithPrototype:prototype controller:controller configuration:configuration action:nil];
@@ -189,6 +194,10 @@
             [self.update reloadRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationNone fromTableViewBehavior:self];
             break;
         } case NSFetchedResultsChangeMove: {
+            if ([indexPath isEqual:newIndexPath]) {
+                return;
+            }
+
             [self.update insertRowsAtIndexPaths:@[ newIndexPath ] withRowAnimation:UITableViewRowAnimationTop fromTableViewBehavior:self];
             [self.update deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationTop fromTableViewBehavior:self];
             break;
