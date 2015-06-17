@@ -40,6 +40,11 @@
 
 #pragma mark - Initialization
 
+- (instancetype)init
+{
+    return [super init];
+}
+
 - (instancetype)initWithPrototype:(UITableViewCell *)prototype configuration:(void(^)(id cell))configuration
 {
     return [self initWithPrototype:prototype configuration:configuration action:nil];
