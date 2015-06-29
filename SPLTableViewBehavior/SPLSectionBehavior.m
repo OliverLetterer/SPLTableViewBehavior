@@ -101,7 +101,7 @@
         return self.title != nil;
     }
 
-    NSArray *protocols = @[ @protocol(UITableViewDataSource), @protocol(UITableViewDelegate) ];
+    NSArray *protocols = @[ @protocol(UITableViewDataSource), @protocol(UITableViewDelegate), @protocol(UIScrollViewDelegate) ];
     for (Protocol *protocol in protocols) {
         if ([self _canForwardSelector:aSelector inProtocol:protocol]) {
             return YES;
@@ -113,7 +113,7 @@
 
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector
 {
-    NSArray *protocols = @[ @protocol(UITableViewDataSource), @protocol(UITableViewDelegate) ];
+    NSArray *protocols = @[ @protocol(UITableViewDataSource), @protocol(UITableViewDelegate), @protocol(UIScrollViewDelegate) ];
 
     for (Protocol *protocol in protocols) {
         struct objc_method_description description = objc_protocolGetInstanceMethod(protocol, aSelector);
@@ -129,6 +129,17 @@
 {
     NSUInteger tableViewIndex = NSNotFound;
     NSUInteger indexPathIndex = NSNotFound;
+
+    if (objc_protocolContainsInstanceMethod(@protocol(UIScrollViewDelegate), invocation.selector)) {
+        NSParameterAssert(invocation.methodSignature.methodReturnLength == 0);
+
+        for (id<SPLTableViewBehavior> behavior in self.childBehaviors) {
+            if ([behavior respondsToSelector:invocation.selector]) {
+                [invocation invokeWithTarget:behavior];
+            }
+        }
+        return;
+    }
 
     for (NSUInteger i = 0; i < invocation.methodSignature.numberOfArguments; i++) {
         const char *signature = [invocation.methodSignature getArgumentTypeAtIndex:i];
@@ -307,6 +318,20 @@
         return NO;
     }
 
+    BOOL(^anyChildRespondsToSelector)(void) = ^BOOL {
+        for (id<SPLTableViewBehavior> behavior in self.childBehaviors) {
+            if ([behavior respondsToSelector:selector]) {
+                return YES;
+            }
+        }
+
+        return NO;
+    };
+
+    if (protocol == @protocol(UIScrollViewDelegate)) {
+        return anyChildRespondsToSelector();
+    }
+
     NSString *lowercaseSelector = NSStringFromSelector(selector).lowercaseString;
     if (![lowercaseSelector containsString:@"tableview"]) {
         return NO;
@@ -316,13 +341,7 @@
         return NO;
     }
 
-    for (id<SPLTableViewBehavior> behavior in self.childBehaviors) {
-        if ([behavior respondsToSelector:selector]) {
-            return YES;
-        }
-    }
-
-    return NO;
+    return anyChildRespondsToSelector();
 }
 
 - (id<SPLTableViewBehavior>)_behaviorForTableView:(UITableView *)tableView atIndexPath:(NSIndexPath *)indexPath childIndexPath:(out NSIndexPath **)childIndexPath
@@ -338,7 +357,7 @@
     if (childIndexPath) {
         *childIndexPath = [NSIndexPath indexPathForRow:indexPath.row - currentRange.location inSection:0];
     }
-    
+
     return self.visibleBehaviors[currentIndex];
 }
 
@@ -370,10 +389,10 @@
                 [self.update insertRowsAtIndexPaths:@[ indexPath ] withRowAnimation:animation fromTableViewBehavior:self];
             }
         }
-
+        
         insertionOffset += count;
     }];
-
+    
     [self.update tableViewBehaviorEndUpdates:self];
 }
 

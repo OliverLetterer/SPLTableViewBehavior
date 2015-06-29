@@ -90,7 +90,7 @@
         return YES;
     }
 
-    NSArray *protocols = @[ @protocol(UITableViewDataSource), @protocol(UITableViewDelegate) ];
+    NSArray *protocols = @[ @protocol(UITableViewDataSource), @protocol(UITableViewDelegate), @protocol(UIScrollViewDelegate) ];
     for (Protocol *protocol in protocols) {
         if ([self _canForwardSelector:aSelector inProtocol:protocol]) {
             return YES;
@@ -102,7 +102,7 @@
 
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector
 {
-    NSArray *protocols = @[ @protocol(UITableViewDataSource), @protocol(UITableViewDelegate) ];
+    NSArray *protocols = @[ @protocol(UITableViewDataSource), @protocol(UITableViewDelegate), @protocol(UIScrollViewDelegate) ];
 
     for (Protocol *protocol in protocols) {
         struct objc_method_description description = objc_protocolGetInstanceMethod(protocol, aSelector);
@@ -116,6 +116,17 @@
 
 - (void)forwardInvocation:(NSInvocation *)invocation
 {
+    if (objc_protocolContainsInstanceMethod(@protocol(UIScrollViewDelegate), invocation.selector)) {
+        NSParameterAssert(invocation.methodSignature.methodReturnLength == 0);
+
+        for (id<SPLTableViewBehavior> behavior in self.childBehaviors) {
+            if ([behavior respondsToSelector:invocation.selector]) {
+                [invocation invokeWithTarget:behavior];
+            }
+        }
+        return;
+    }
+
     if ([self _isIndexPathBasedSelector:invocation.selector]) {
         NSUInteger indexPathIndex = NSNotFound;
 
@@ -402,6 +413,20 @@
         return NO;
     }
 
+    BOOL(^anyChildRespondsToSelector)(void) = ^BOOL {
+        for (id<SPLTableViewBehavior> behavior in self.childBehaviors) {
+            if ([behavior respondsToSelector:selector]) {
+                return YES;
+            }
+        }
+
+        return NO;
+    };
+
+    if (protocol == @protocol(UIScrollViewDelegate)) {
+        return anyChildRespondsToSelector();
+    }
+
     NSString *lowercaseSelector = NSStringFromSelector(selector).lowercaseString;
     if (![lowercaseSelector containsString:@"tableview"]) {
         return NO;
@@ -411,13 +436,7 @@
         return NO;
     }
 
-    for (id<SPLTableViewBehavior> behavior in self.childBehaviors) {
-        if ([behavior respondsToSelector:selector]) {
-            return YES;
-        }
-    }
-
-    return NO;
+    return anyChildRespondsToSelector();
 }
 
 - (id<SPLTableViewBehavior>)_behaviorInSection:(NSInteger)section childSection:(out NSInteger *)childSection
@@ -441,11 +460,11 @@
 {
     NSInteger childSection = 0;
     id<SPLTableViewBehavior> behavior = [self _behaviorInSection:indexPath.section childSection:&childSection];
-
+    
     if (childIndexPath) {
         *childIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:childSection];
     }
-
+    
     return behavior;
 }
 
