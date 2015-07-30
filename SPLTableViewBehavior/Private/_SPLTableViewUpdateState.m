@@ -98,6 +98,11 @@
 
 @implementation _SPLTableViewUpdateState
 
+- (NSInteger)updateCount
+{
+    return self.deletedSections.count + self.insertedSections.count + self.updatedSections.count + self.deletedIndexPaths.count + self.insertedIndexPaths.count + self.updatedIndexPaths.count;
+}
+
 - (instancetype)init
 {
     if (self = [super init]) {
@@ -117,6 +122,7 @@
     NSArray *updates = @[
                          [NSString stringWithFormat:@"\t* insertedSections: %@", [self.insertedSections componentsJoinedByString:@", "]],
                          [NSString stringWithFormat:@"\t* deletedSections: %@", [self.deletedSections componentsJoinedByString:@", "]],
+                         [NSString stringWithFormat:@"\t* updatedSections: %@", [self.updatedSections componentsJoinedByString:@", "]],
 
                          [NSString stringWithFormat:@"\t* insertedIndexPaths: %@", [self.insertedIndexPaths componentsJoinedByString:@", "]],
                          [NSString stringWithFormat:@"\t* deletedIndexPaths: %@", [self.deletedIndexPaths componentsJoinedByString:@", "]],
@@ -166,6 +172,7 @@
         _SPLSectionUpdate *update = [[_SPLSectionUpdate alloc] initWithSection:section animation:animation];
         if (![self.deletedSections containsObject:update]) {
             self.deletedSections = [self.deletedSections arrayByAddingObject:update];
+            self.updatedSections = [self _removeDeletedSections:self.updatedSections];
 
             self.insertedIndexPaths = [self _removeIndexPathsWithSection:section fromArray:self.insertedIndexPaths];
             self.deletedIndexPaths = [self _removeIndexPathsWithSection:section fromArray:self.deletedIndexPaths];
@@ -178,7 +185,7 @@
 {
     [sections enumerateIndexesUsingBlock:^(NSUInteger section, BOOL *stop) {
         _SPLSectionUpdate *update = [[_SPLSectionUpdate alloc] initWithSection:section animation:animation];
-        if (![self.deletedSections containsObject:update]) {
+        if (![self.deletedSections containsObject:update] && ![self.insertedSections containsObject:update] && ![self.updatedSections containsObject:update]) {
             self.updatedSections = [self.updatedSections arrayByAddingObject:update];
         }
     }];
@@ -222,6 +229,22 @@
     for (NSIndexPath *indexPath in indexPaths) {
         if (![deletedSections containsIndex:indexPath.section]) {
             [result addObject:indexPath];
+        }
+    }
+    return result;
+}
+
+- (NSArray *)_removeDeletedSections:(NSArray *)sections
+{
+    NSMutableIndexSet *deletedSections = [NSMutableIndexSet indexSet];
+    for (_SPLSectionUpdate *update in self.deletedSections) {
+        [deletedSections addIndex:update.section];
+    }
+
+    NSMutableArray *result = [NSMutableArray array];
+    for (_SPLSectionUpdate *update in sections) {
+        if (![deletedSections containsIndex:update.section]) {
+            [result addObject:update];
         }
     }
     return result;

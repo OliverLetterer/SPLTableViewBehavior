@@ -42,6 +42,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, nullable, readonly) void(^deletionHandler)(id object);
 @property (nonatomic, nullable, readonly) NSString *deleteConfirmationName;
 
+@property (nonatomic, assign) UITableViewScrollPosition insertedRowsScrollPosition;
+
 - (void)setDeletionHandler:(void (^ __nullable)(id __nonnull object))deletionHandler;
 - (void)setDeletionHandler:(void (^ __nullable)(id __nonnull object))deletionHandler withName:(nullable NSString *)deleteConfirmationName;
 

@@ -32,6 +32,10 @@
 @property (nonatomic, readonly) void(^configuration)(id cell, id object);
 @property (nonatomic, readonly) UITableViewCellPrototypeDeque deque;
 
+@property (nonatomic, weak) UITableView *tableView;
+
+@property (nonatomic, strong) NSMutableArray *insertedRows;
+
 @end
 
 
@@ -87,6 +91,7 @@
         _deque = prototype.dequeBlock;
         _configuration = configuration;
         _action = action;
+        _insertedRowsScrollPosition = UITableViewScrollPositionNone;
 
         self.controller = controller;
     }
@@ -120,6 +125,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    self.tableView = tableView;
     return self.controller.fetchedObjects.count;
 }
 
@@ -170,6 +176,8 @@
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
     [self.update tableViewBehaviorBeginUpdates:self];
+
+    self.insertedRows = [NSMutableArray array];
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
@@ -179,12 +187,20 @@
     if (self.observer != nil) {
         self.observer();
     }
+
+    if (self.insertedRows.count > 0 && self.insertedRowsScrollPosition != UITableViewScrollPositionNone) {
+        NSIndexPath *lastIndexPath = [self.insertedRows sortedArrayUsingSelector:@selector(compare:)].lastObject;
+        lastIndexPath = [self.update convertIndexPath:lastIndexPath fromChildBehavior:self];
+
+        [self.tableView scrollToRowAtIndexPath:lastIndexPath atScrollPosition:self.insertedRowsScrollPosition animated:YES];
+    }
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath
 {
     switch (type) {
         case NSFetchedResultsChangeInsert: {
+            [self.insertedRows addObject:newIndexPath];
             [self.update insertRowsAtIndexPaths:@[ newIndexPath ] withRowAnimation:UITableViewRowAnimationTop fromTableViewBehavior:self];
             break;
         } case NSFetchedResultsChangeDelete: {

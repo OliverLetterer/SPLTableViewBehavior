@@ -37,6 +37,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface _SPLTableViewUpdateState : NSObject <SPLTableViewUpdate>
 
+@property (nonatomic, readonly) NSInteger updateCount;
+
 @property (nonatomic, readonly) NSArray *insertedSections;
 @property (nonatomic, readonly) NSArray *deletedSections;
 @property (nonatomic, readonly) NSArray *updatedSections;

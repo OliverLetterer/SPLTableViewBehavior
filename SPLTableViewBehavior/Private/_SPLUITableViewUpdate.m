@@ -130,9 +130,7 @@
 
 - (void)_applyUpdateFromState:(_SPLTableViewUpdateState *)state
 {
-    NSInteger totalChanges = state.deletedSections.count + state.insertedSections.count + state.deletedIndexPaths.count + state.insertedIndexPaths.count + state.updatedIndexPaths.count;
-
-    if (totalChanges > 50 || !self.tableView.window) {
+    if (state.updateCount > 50 || state.updateCount <= 0 || !self.tableView.window) {
         return [self.tableView reloadData];
     }
 
@@ -149,6 +147,10 @@
     };
 
     [self.tableView beginUpdates];
+
+    for (_SPLSectionUpdate *update in state.updatedSections) {
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:update.section] withRowAnimation:update.animation];
+    }
 
     for (_SPLSectionUpdate *update in state.deletedSections) {
         [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:update.section] withRowAnimation:update.animation];
@@ -169,7 +171,7 @@
     for (_SPLIndexPathUpdate *update in state.updatedIndexPaths) {
         [self.tableView reloadRowsAtIndexPaths:@[ transform(update.indexPath) ] withRowAnimation:update.animation];
     }
-
+    
     [self.tableView endUpdates];
 }
 
