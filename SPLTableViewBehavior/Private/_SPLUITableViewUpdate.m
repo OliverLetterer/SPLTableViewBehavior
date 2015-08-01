@@ -130,7 +130,11 @@
 
 - (void)_applyUpdateFromState:(_SPLTableViewUpdateState *)state
 {
-    if (state.updateCount > 50 || state.updateCount <= 0 || !self.tableView.window) {
+    if (state.updateCount <= 0) {
+        return;
+    }
+
+    if (state.updateCount > 50 || !self.tableView.window) {
         return [self.tableView reloadData];
     }
 
