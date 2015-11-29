@@ -40,9 +40,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, weak) id<SPLTableViewUpdate> update;
 
+@property (nonatomic, copy, nullable) CGFloat(^computesHeight)(void);
+
 - (instancetype)init NS_DESIGNATED_INITIALIZER UNAVAILABLE_ATTRIBUTE;
 - (instancetype)initWithPrototype:(UITableViewCell *)prototype configuration:(void(^)(id cell))configuration;
 - (instancetype)initWithPrototype:(UITableViewCell *)prototype configuration:(void(^)(id cell))configuration action:(void(^ __nullable)(id cell))action NS_DESIGNATED_INITIALIZER;
+
+- (void)reloadWithRowAnimation:(UITableViewRowAnimation)animation;
 
 @end
 

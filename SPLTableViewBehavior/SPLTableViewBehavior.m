@@ -38,6 +38,11 @@
 
 @implementation SPLTableViewBehavior
 
+- (void)reloadWithRowAnimation:(UITableViewRowAnimation)animation
+{
+    [self.update reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForRow:0 inSection:0] ] withRowAnimation:animation fromTableViewBehavior:self];
+}
+
 #pragma mark - Initialization
 
 - (instancetype)init
@@ -68,6 +73,10 @@
         return self.action != nil;
     }
 
+    if (aSelector == @selector(tableView:heightForRowAtIndexPath:)) {
+        return self.computesHeight != nil;
+    }
+
     return [super respondsToSelector:aSelector];
 }
 
@@ -90,6 +99,11 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     self.action([tableView cellForRowAtIndexPath:tableView.indexPathForSelectedRow]);
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return self.computesHeight();
 }
 
 @end

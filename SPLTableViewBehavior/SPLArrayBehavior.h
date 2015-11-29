@@ -28,18 +28,22 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface SPLArrayBehavior : NSObject <SPLTableViewBehavior>
+@interface SPLArrayBehavior<CellType:UITableViewCell *, ObjectType> : NSObject <SPLTableViewBehavior>
 
 @property (nonatomic, weak) id<SPLTableViewUpdate> update;
 
-@property (nonatomic, copy, readonly) NSArray *data;
-- (void)setData:(NSArray *)data withAnimation:(UITableViewRowAnimation)animation;
+@property (nonatomic, copy, readonly) NSArray<ObjectType> *data;
+- (void)setData:(NSArray<ObjectType> *)data withAnimation:(UITableViewRowAnimation)animation;
+
+- (void)reloadWithAnimation:(UITableViewRowAnimation)animation;
+- (void)reloadRowForDataObject:(ObjectType)dataObject withAnimation:(UITableViewRowAnimation)animation;
+- (__kindof CellType)cellForDataObject:(ObjectType)dataObject inTableView:(UITableView *)tableView;
 
 @property (nonatomic, nullable, copy) void(^deletionHandler)(id object);
 
 - (instancetype)init NS_DESIGNATED_INITIALIZER UNAVAILABLE_ATTRIBUTE;
-- (instancetype)initWithPrototype:(UITableViewCell *)prototype data:(NSArray *)data configuration:(void(^)(id cell, id object))configuration;
-- (instancetype)initWithPrototype:(UITableViewCell *)prototype data:(NSArray *)data configuration:(void(^)(id cell, id object))configuration action:(void(^ __nullable)(id object))action NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithPrototype:(__kindof CellType)prototype data:(NSArray<ObjectType> *)data configuration:(void(^)(__kindof CellType cell, ObjectType object))configuration;
+- (instancetype)initWithPrototype:(__kindof CellType)prototype data:(NSArray<ObjectType> *)data configuration:(void(^)(__kindof CellType cell, ObjectType object))configuration action:(void(^ __nullable)(ObjectType object))action NS_DESIGNATED_INITIALIZER;
 
 @end
 

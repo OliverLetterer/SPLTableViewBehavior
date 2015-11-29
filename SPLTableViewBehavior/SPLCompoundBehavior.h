@@ -32,7 +32,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, weak) id<SPLTableViewUpdate> update;
 
-@property (nonatomic, copy, readonly) NSArray *childBehaviors;
+@property (nonatomic, copy) NSArray *childBehaviors;
+- (void)setChildBehaviors:(NSArray *)childBehaviors withRowAnimation:(UITableViewRowAnimation)animation;
+
 @property (nonatomic, copy) NSArray *visibleBehaviors;
 - (void)setVisibleBehaviors:(NSArray *)visibleBehaviors withRowAnimation:(UITableViewRowAnimation)animation;
 

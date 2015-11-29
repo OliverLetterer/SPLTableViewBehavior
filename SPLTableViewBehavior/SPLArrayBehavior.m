@@ -61,6 +61,33 @@
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
+#pragma mark - Instance methods
+
+- (void)reloadWithAnimation:(UITableViewRowAnimation)animation
+{
+    [self.update reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:animation fromTableViewBehavior:self];
+}
+
+- (void)reloadRowForDataObject:(id)dataObject withAnimation:(UITableViewRowAnimation)animation
+{
+    NSInteger index = [self.data indexOfObject:dataObject];
+    if (index == NSNotFound) {
+        return;
+    }
+
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+    [self.update reloadRowsAtIndexPaths:@[ indexPath ] withRowAnimation:animation fromTableViewBehavior:self];
+}
+
+- (__kindof UITableViewCell *)cellForDataObject:(id)dataObject inTableView:(UITableView *)tableView
+{
+    NSInteger index = [self.data indexOfObject:dataObject];
+    NSParameterAssert(index != NSNotFound);
+
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+    return [tableView cellForRowAtIndexPath:[self.update convertIndexPath:indexPath fromChildBehavior:self]];
+}
+
 #pragma mark - Initialization
 
 - (instancetype)init
@@ -68,12 +95,12 @@
     return [super init];
 }
 
-- (instancetype)initWithPrototype:(UITableViewCell *)prototype data:(NSArray *)data configuration:(void(^)(id cell, id object))configuration
+- (instancetype)initWithPrototype:(__kindof UITableViewCell *)prototype data:(NSArray *)data configuration:(void(^)(__kindof UITableViewCell *cell, id object))configuration
 {
     return [self initWithPrototype:prototype data:data configuration:configuration action:nil];
 }
 
-- (instancetype)initWithPrototype:(UITableViewCell *)prototype data:(NSArray *)data configuration:(void(^)(id cell, id object))configuration action:(void(^)(id object))action
+- (instancetype)initWithPrototype:(__kindof UITableViewCell *)prototype data:(NSArray *)data configuration:(void(^)(__kindof UITableViewCell *cell, id object))configuration action:(void(^)(id object))action
 {
     if (self = [super init]) {
         _data = data.copy;

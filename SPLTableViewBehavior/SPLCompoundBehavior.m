@@ -37,6 +37,31 @@
 
 #pragma mark - setters and getters
 
+- (void)setChildBehaviors:(NSArray *)childBehaviors
+{
+    [self setChildBehaviors:childBehaviors withRowAnimation:UITableViewRowAnimationNone];
+}
+
+- (void)setChildBehaviors:(NSArray *)childBehaviors withRowAnimation:(UITableViewRowAnimation)animation
+{
+    if (childBehaviors != _childBehaviors) {
+        for (id<SPLTableViewBehavior> behavior in _childBehaviors) {
+            behavior.update = nil;
+        }
+
+        NSArray *previousVisibleBehaviors = _visibleBehaviors;
+
+        _childBehaviors = childBehaviors;
+        _visibleBehaviors = childBehaviors;
+
+        for (id<SPLTableViewBehavior> behavior in _childBehaviors) {
+            behavior.update = self;
+        }
+
+        [self _animateFromVisibleBehaviors:previousVisibleBehaviors to:_visibleBehaviors withAnimation:animation];
+    }
+}
+
 - (void)setVisibleBehaviors:(NSArray *)visibleBehaviors
 {
     [self setVisibleBehaviors:visibleBehaviors withRowAnimation:UITableViewRowAnimationNone];
