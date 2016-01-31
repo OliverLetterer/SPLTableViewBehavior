@@ -35,6 +35,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, readonly) NSArray<ObjectType> *data;
 - (void)setData:(NSArray<ObjectType> *)data withAnimation:(UITableViewRowAnimation)animation;
 
+@property (nonatomic, assign) BOOL computesDynamicRowHeight;
+
 - (void)reloadWithAnimation:(UITableViewRowAnimation)animation;
 - (void)reloadRowForDataObject:(ObjectType)dataObject withAnimation:(UITableViewRowAnimation)animation;
 - (__kindof CellType)cellForDataObject:(ObjectType)dataObject inTableView:(UITableView *)tableView;

@@ -30,6 +30,7 @@
 
 @property (nonatomic, copy) NSArray *data;
 @property (nonatomic, readonly) NSMutableArray *mutableData;
+@property (nonatomic, readonly) BOOL supportsDynamicHeight;
 
 @property (nonatomic, copy) void(^action)(id object);
 @property (nonatomic, readonly) void(^configuration)(id cell, id object);
@@ -104,6 +105,7 @@
 {
     if (self = [super init]) {
         _data = data.copy;
+        _supportsDynamicHeight = [prototype methodForSelector:@selector(sizeThatFits:)] != [UITableViewCell instanceMethodForSelector:@selector(sizeThatFits:)];
 
         _deque = prototype.dequeBlock;
         _configuration = configuration;
@@ -122,6 +124,10 @@
 
     if (aSelector == @selector(tableView:canEditRowAtIndexPath:) || aSelector == @selector(tableView:commitEditingStyle:forRowAtIndexPath:)) {
         return self.deletionHandler != nil;
+    }
+
+    if (aSelector == @selector(tableView:heightForRowAtIndexPath:)) {
+        return self.computesDynamicRowHeight;
     }
 
     return [super respondsToSelector:aSelector];
@@ -166,6 +172,11 @@
 }
 
 #pragma mark - UITableViewDelegate
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return UITableViewAutomaticDimension;
+}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
