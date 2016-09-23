@@ -41,7 +41,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)reloadRowForDataObject:(ObjectType)dataObject withAnimation:(UITableViewRowAnimation)animation;
 - (__kindof CellType)cellForDataObject:(ObjectType)dataObject inTableView:(UITableView *)tableView;
 
-@property (nonatomic, nullable, copy) void(^deletionHandler)(id object);
+@property (nonatomic, nullable, copy) void(^deletionHandler)(ObjectType object); // observes a deletion
+@property (nonatomic, nullable, copy) void(^advancedDeletion)(ObjectType object, dispatch_block_t completion); // called to perform a deletion
+
+@property (nonatomic, nullable, copy) void(^accessoryButtonAction)(ObjectType object);
 
 - (instancetype)init NS_DESIGNATED_INITIALIZER UNAVAILABLE_ATTRIBUTE;
 - (instancetype)initWithPrototype:(__kindof CellType)prototype data:(NSArray<ObjectType> *)data configuration:(void(^)(__kindof CellType cell, ObjectType object))configuration;

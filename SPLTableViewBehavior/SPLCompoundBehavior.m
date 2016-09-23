@@ -87,6 +87,13 @@
     }
 }
 
+- (void)reloadWithRowAnimation:(UITableViewRowAnimation)animation
+{
+    [self.update tableViewBehaviorBeginUpdates:self];
+    [self.update reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.visibleBehaviors.count)] withRowAnimation:animation fromTableViewBehavior:self];
+    [self.update tableViewBehaviorEndUpdates:self];
+}
+
 #pragma mark - Initialization
 
 - (instancetype)init

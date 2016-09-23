@@ -123,11 +123,15 @@
     }
 
     if (aSelector == @selector(tableView:canEditRowAtIndexPath:) || aSelector == @selector(tableView:commitEditingStyle:forRowAtIndexPath:)) {
-        return self.deletionHandler != nil;
+        return self.advancedDeletion != nil || self.deletionHandler != nil;
     }
 
     if (aSelector == @selector(tableView:heightForRowAtIndexPath:)) {
         return self.computesDynamicRowHeight;
+    }
+    
+    if (aSelector == @selector(tableView:accessoryButtonTappedForRowWithIndexPath:)) {
+        self.accessoryButtonAction != nil;
     }
 
     return [super respondsToSelector:aSelector];
@@ -159,16 +163,33 @@
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         id object = self.data[indexPath.row];
-        [self.mutableData removeObjectAtIndex:indexPath.row];
-
-        [CATransaction begin];
-        [CATransaction setCompletionBlock:^{
-            self.deletionHandler(object);
-        }];
-
-        [self.update deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationLeft fromTableViewBehavior:self];
-        [CATransaction commit];
+        
+        void(^performDeletion)(void) = ^{
+            [self.mutableData removeObjectAtIndex:indexPath.row];
+            
+            [CATransaction begin];
+            [CATransaction setCompletionBlock:^{
+                if (self.deletionHandler != nil) {
+                    self.deletionHandler(object);
+                }
+            }];
+            
+            [self.update deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationLeft fromTableViewBehavior:self];
+            [CATransaction commit];
+        };
+        
+        if (self.advancedDeletion != nil) {
+            self.advancedDeletion(object, performDeletion);
+        } else {
+            performDeletion();
+        }
     }
+}
+
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
+{
+    id object = self.data[indexPath.row];
+    self.accessoryButtonAction(object);
 }
 
 #pragma mark - UITableViewDelegate
