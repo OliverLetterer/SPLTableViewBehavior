@@ -129,9 +129,9 @@
     if (aSelector == @selector(tableView:heightForRowAtIndexPath:)) {
         return self.computesDynamicRowHeight;
     }
-    
+
     if (aSelector == @selector(tableView:accessoryButtonTappedForRowWithIndexPath:)) {
-        self.accessoryButtonAction != nil;
+        return self.accessoryButtonAction != nil;
     }
 
     return [super respondsToSelector:aSelector];
@@ -163,21 +163,21 @@
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         id object = self.data[indexPath.row];
-        
+
         void(^performDeletion)(void) = ^{
             [self.mutableData removeObjectAtIndex:indexPath.row];
-            
+
             [CATransaction begin];
             [CATransaction setCompletionBlock:^{
                 if (self.deletionHandler != nil) {
                     self.deletionHandler(object);
                 }
             }];
-            
+
             [self.update deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationLeft fromTableViewBehavior:self];
             [CATransaction commit];
         };
-        
+
         if (self.advancedDeletion != nil) {
             self.advancedDeletion(object, performDeletion);
         } else {
